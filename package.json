@@ -1,0 +1,40 @@
+{
+  "name": "majax",
+  "version": "1.0.0",
+  "description": "multiple ajax solution (sync or async, the choice is yours!)",
+  "main": "index.js",
+  "scripts": {
+    "dev": "./node_modules/rollup/bin/rollup -c rollup.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bennnis/majax.git"
+  },
+  "keywords": [
+    "ajax"
+  ],
+  "author": "bennnis",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Bennnis/majax/issues"
+  },
+  "homepage": "https://github.com/Bennnis/majax#readme",
+  "devDependencies": {
+    "@babel/core": "^7.1.0",
+    "@babel/plugin-external-helpers": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "eslint": "^5.6.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "rollup": "^0.66.0",
+    "rollup-plugin-babel": "^4.0.3"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.0.0"
+  }
+}

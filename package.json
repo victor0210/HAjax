@@ -4,7 +4,7 @@
   "description": "multiple ajax solution (sync or async, the choice is yours!)",
   "main": "index.js",
   "scripts": {
-    "dev": "./node_modules/rollup/bin/rollup -c rollup.config.js",
+    "dev": "./node_modules/rollup/bin/rollup -c rollup.config.js -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -32,7 +32,11 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "rollup": "^0.66.0",
-    "rollup-plugin-babel": "^4.0.3"
+    "rollup-plugin-alias": "^1.4.0",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-typescript": "^1.0.0",
+    "typescript": "^3.0.3"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0"

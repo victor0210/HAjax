@@ -42,6 +42,12 @@ export default class Request {
     // `_xhr` is ajax request driver
     _xhr: XMLHttpRequest
 
+    // `_resovler`
+    _resolver: Function
+
+    // `_rejecter`
+    _rejecter: Function
+
     constructor(config) {
         this.url = config.url
         this.method = config.method
@@ -53,6 +59,8 @@ export default class Request {
         this.withCredentials = config.withCredentials
         this.responseType = config.responseType
 
+        this._resolver = config.resolver
+        this._rejecter = config.rejecter
         this._initXHR()
     }
 

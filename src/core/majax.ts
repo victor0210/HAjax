@@ -1,8 +1,8 @@
 import initMixin from '../mixins/initMixin'
 import requestMixin from '../mixins/requestMixin'
-import interceptorMixin from '../mixins/interceptorMixin'
 import {initConfig, initFlow} from "./initer";
 
+//global api
 function MAJAX(config = {}) {
     initConfig(config)
     initFlow()
@@ -10,6 +10,5 @@ function MAJAX(config = {}) {
 
 initMixin()
 requestMixin()
-interceptorMixin()
 
 export default MAJAX

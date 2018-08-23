@@ -15,11 +15,12 @@ export default abstract class Flow {
 
         this._flows.push(flow)
         this._index++
-        console.log(this._flows)
     }
 
     public addFlows(flows: Array<Chain>) {
-        this._flows = [...this._flows, ...flows]
+        while(flows.length) {
+            this.addFlow(flows.shift())
+        }
     }
 
     public action(spec: any) {

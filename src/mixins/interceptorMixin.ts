@@ -1,8 +1,8 @@
-import MAJAX from '../core/majax'
+import MX from '../core/mx'
 
 const requestMixin = () => {
-  MAJAX.prototype.requestInterceptor = (config) => {}
-  MAJAX.prototype.responseInterceptor = (config) => {}
+  MX.prototype.requestInterceptor = (config) => {}
+  MX.prototype.responseInterceptor = (config) => {}
 }
 
 export default requestMixin

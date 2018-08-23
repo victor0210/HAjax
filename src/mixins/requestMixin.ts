@@ -23,7 +23,7 @@ const requestMixin = () => {
         _request({
             ...config,
             url: url,
-            method: 'get'
+            method: 'post'
         })
     }
 }

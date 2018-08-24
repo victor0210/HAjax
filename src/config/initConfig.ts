@@ -6,7 +6,9 @@ export default {
     config: {},
 
     // request headers
-    headers: {},
+    headers: {
+        'Content-Type': 'application/json'
+    },
 
     // auto force send cookie auth to server
     // default false
@@ -15,9 +17,9 @@ export default {
     // request time out cancel: callback to catch function
     timeout: null,
 
-    // request if block
-    // true will block the reset of requests in requests queue,
-    // which is wonderful in the pre request such as getting some auth info before
-    // default false
-    block: false
+    // responseType
+    responseType: 'json',
+
+    // storeStrategy
+    storeStrategy: null
 }

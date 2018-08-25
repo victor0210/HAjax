@@ -1,6 +1,7 @@
 import createXHR from '../../utils/createXHR'
 
-export default class Request {
+export default class MRequest {
+    private _uuid: Number = Math.random() * 10e9
     // `url` is the server URL that will be used for the request
     url: String
 
@@ -42,31 +43,31 @@ export default class Request {
     // `_xhr` is ajax request driver
     _xhr: XMLHttpRequest
 
-    // `_resovler`
-    _resolver: Function
+    // `_onFulfilled`
+    _onFulfilled: Function
 
-    // `_rejecter`
-    _rejecter: Function
+    // `_onFailed`
+    _onFailed: Function
 
-    constructor(config) {
+    constructor(config, onFulfilled, onFailed) {
         this.url = config.url
         this.method = config.method
-        this.baseURL = config.baseURL
-        this.headers = config.headers
-        this.params = config.params
-        this.data = config.data
-        this.timeout = config.timeout
-        this.withCredentials = config.withCredentials
-        this.responseType = config.responseType
-
-        this._resolver = config.resolver
-        this._rejecter = config.rejecter
+        this.baseURL= config.baseURL
+        this.headers= config.headers
+        this.params= config.params
+        this.data= config.data
+        this.timeout= config.timeout
+        this.withCredentials= config.withCredentials
         this._initXHR()
     }
 
     private _initXHR() {
         // xhr in browser
         this._xhr = createXHR(this)
+    }
+
+    public getUUID () {
+        return this._uuid
     }
 
     send() {

@@ -1,6 +1,6 @@
-import Request from './Request'
+import Request from './MRequest'
 
-export default class Response {
+export default class MResponse {
 
     // `data` is an object transformed by response schema data
     data: object

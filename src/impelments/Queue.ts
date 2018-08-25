@@ -12,4 +12,8 @@ class Queue {
     public unqueue() {
         return this._queue.shift()
     }
+
+    public hasNext() {
+        return this._queue.length > 0
+    }
 }

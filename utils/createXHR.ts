@@ -1,16 +1,15 @@
-import Request from '../src/core/Request'
 import urlFormat from "./urlFormat";
 
-const createXHR = (r: Request) => {
+const createXHR = (requestInstance) => {
     const xhr = new XMLHttpRequest();
 
-    configInject(xhr, r)
+    configInject(xhr, requestInstance)
 
     return xhr
 }
 
-const configInject = (xhr, r) => {
-    xhrUtils.common(xhr, r)
+const configInject = (xhr, requestInstance) => {
+    xhrUtils.common(xhr, requestInstance)
 }
 
 const xhrUtils = {
@@ -23,9 +22,11 @@ const xhrUtils = {
             xhr.setRequestHeader(header, config.headers[header]);
         }
 
+        xhr.responseType = config.responseType
         //withCredentials
         xhr.withCredentials = config.withCredentials
     },
+
     get: (xhr, config) => {
         //config common
         xhr.open(

@@ -11,6 +11,7 @@ class Majax {
     private _responseInterceptor
     private _requestPool
     private _requestDealTarget
+    private _responseDealTarget
 
     public config
 
@@ -22,7 +23,8 @@ class Majax {
         this._requestDealTarget = null
     }
 
-    private _run(requestInstance) {
+    public runReq(requestInstance) {
+        requestInstance.accept(requestInstance)
         this._requestQueue.enqeueue(requestInstance)
         this._emitRequestFlow()
     }
@@ -32,6 +34,28 @@ class Majax {
             this._requestDealTarget = this._requestQueue.unqueue()
             if (this._requestInterceptor) this._requestDealTarget = this._requestInterceptor(this._requestDealTarget)
             this._pushToRequestPool(this._requestDealTarget)
+        }
+    }
+
+    public runResp(responseInstance) {
+        // responseInstance.accept(responseInstance)
+        this._responseQueue.enqeueue(responseInstance)
+        this._emitResponseFlow()
+    }
+
+    private _emitResponseFlow() {
+        if (!this._responseDealTarget && this._responseQueue.hasNext()) {
+            this._responseDealTarget = this._responseQueue.unqueue()
+            if (this._responseInterceptor) this._responseDealTarget = this._responseInterceptor(this._responseDealTarget)
+            this._handleComplete(this._responseDealTarget)
+        }
+    }
+
+    private _handleComplete(responseInstance) {
+        if (/^[2]/.test(responseInstance.code)) {
+            responseInstance.completeWithFulfilled()
+        } else {
+            responseInstance.completeWithFailed()
         }
     }
 
@@ -59,7 +83,7 @@ class Majax {
         return new Promise((resolve, reject) => {
             // init request instance & mixin resolve and reject
             // start request flow
-            this._run(
+            this.runReq(
                 new MRequest(opts, resolve, reject)
             )
         })

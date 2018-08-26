@@ -1,4 +1,4 @@
-import Request from './MRequest'
+import MRequest from "./MRequest";
 
 export default class MResponse {
 
@@ -19,8 +19,18 @@ export default class MResponse {
     config: {}
 
     // `request` is Request instance
-    request: Request
+    request: MRequest
 
-    constructor(config) {
+    constructor(respInfo, requestInstance) {
+        console.log(respInfo, 'handle response')
+        this.request = requestInstance
+    }
+
+    completeWithFulfilled() {
+        this.request.success(this)
+    }
+
+    completeWithFailed() {
+        this.request.failed(this)
     }
 }

@@ -1,4 +1,7 @@
 import createXHR from '../../utils/createXHR'
+import MResponse from "./MResponse";
+import Majax from "./Majax";
+import {STATE_DONE} from "../config/readyState";
 
 export default class MRequest {
     private _uuid: Number = Math.random() * 10e9
@@ -41,7 +44,10 @@ export default class MRequest {
     responseType: String // default
 
     // `_xhr` is ajax request driver
-    _xhr: XMLHttpRequest
+    xhr: XMLHttpRequest
+
+    // `_majaxInstance` driver of this request, inject by visit
+    _majaxInstance: Majax
 
     // `_onFulfilled`
     _onFulfilled: Function
@@ -58,19 +64,42 @@ export default class MRequest {
         this.data= config.data
         this.timeout= config.timeout
         this.withCredentials= config.withCredentials
+        this._onFulfilled = onFulfilled
+        this._onFailed = onFailed
         this._initXHR()
     }
 
     private _initXHR() {
         // xhr in browser
-        this._xhr = createXHR(this)
+        const xhr = createXHR(this)
+
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState == STATE_DONE){
+                this._majaxInstance.runResp(new MResponse(xhr.response, this))
+                // alert(JSON.stringify(xhr.response, null, 2))
+            }
+        }
+
+        this.xhr = xhr
+    }
+
+    public success(responseInstance) {
+        this._onFulfilled(responseInstance)
+    }
+
+    public failed(responseInstance) {
+        this._onFailed(responseInstance)
     }
 
     public getUUID () {
         return this._uuid
     }
 
-    send() {
-        this._xhr.send(JSON.stringify(this.data))
+    public accept (majaxInstance) {
+        this._majaxInstance = majaxInstance
+    }
+
+    public send() {
+        this.xhr.send(JSON.stringify(this.data))
     }
 }

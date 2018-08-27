@@ -1,11 +1,11 @@
-class Queue {
+export default class Queue {
     private _queue
 
     constructor() {
         this._queue = []
     }
 
-    public enqeueue(m) {
+    public enqueue(m) {
         this._queue.push(m)
     }
 

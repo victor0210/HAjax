@@ -2,9 +2,6 @@ export default {
     // url prefix
     baseUrl: null,
 
-    // global config
-    config: {},
-
     // request headers
     headers: {
         'Content-Type': 'application/json'
@@ -15,7 +12,7 @@ export default {
     withCredentials: false,
 
     // request time out cancel: callback to catch function
-    timeout: null,
+    timeout: 0,
 
     // responseType
     responseType: 'json',

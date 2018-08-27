@@ -1,57 +1,72 @@
-import _defaults from 'config/initConfig'
+import defaults from '../config/initConfig'
 import mergeConfig from "../../utils/mergeConfig";
 import {GET_FLAG, POST_FLAG} from "../config/requestMethods";
 import MRequest from "./MRequest";
+import Queue from "../impelments/Queue";
+import MResponse from "./MResponse";
 
 class Majax {
-    private _store
-    private _requestQueue
-    private _responseQueue
-    private _requestInterceptor
-    private _responseInterceptor
-    private _requestPool
-    private _requestDealTarget
-    private _responseDealTarget
+    private _store: Object
 
-    public config
+    private _requestQueue: Queue
 
-    constructor(opts) {
-        this.config = mergeConfig(_defaults, opts)
+    private _responseQueue: Queue
+
+    private _requestInterceptor: Function
+
+    private _responseInterceptor: Function
+
+    private _requestPool: {}
+
+    private _requestDealTarget: MRequest
+
+    private _responseDealTarget: MResponse
+
+    public config: Object
+
+    constructor (
+        opts = {}
+    ) {
+        this.config = mergeConfig(defaults, opts)
         this._store = {}
         this._requestQueue = new Queue()
         this._responseQueue = new Queue()
+        this._requestPool = {}
         this._requestDealTarget = null
     }
 
-    public runReq(requestInstance) {
-        requestInstance.accept(requestInstance)
-        this._requestQueue.enqeueue(requestInstance)
+    public _runReq(requestInstance) {
+        requestInstance.accept(this)
+        this._requestQueue.enqueue(requestInstance)
         this._emitRequestFlow()
     }
 
     private _emitRequestFlow() {
         if (!this._requestDealTarget && this._requestQueue.hasNext()) {
             this._requestDealTarget = this._requestQueue.unqueue()
-            if (this._requestInterceptor) this._requestDealTarget = this._requestInterceptor(this._requestDealTarget)
+            if (this._requestInterceptor) this._requestInterceptor(this._requestDealTarget.config)
             this._pushToRequestPool(this._requestDealTarget)
         }
     }
 
-    public runResp(responseInstance) {
-        // responseInstance.accept(responseInstance)
-        this._responseQueue.enqeueue(responseInstance)
+    public _runResp(responseInstance) {
+        this._responseQueue.enqueue(responseInstance)
         this._emitResponseFlow()
     }
 
     private _emitResponseFlow() {
         if (!this._responseDealTarget && this._responseQueue.hasNext()) {
             this._responseDealTarget = this._responseQueue.unqueue()
-            if (this._responseInterceptor) this._responseDealTarget = this._responseInterceptor(this._responseDealTarget)
+            if (this._responseInterceptor) this._responseInterceptor(this._responseDealTarget.config)
             this._handleComplete(this._responseDealTarget)
         }
     }
 
     private _handleComplete(responseInstance) {
+        this._responseDealTarget = null
+        delete this._requestPool[responseInstance.request.getUUID()]
+
+        this._emitResponseFlow()
         if (/^[2]/.test(responseInstance.code)) {
             responseInstance.completeWithFulfilled()
         } else {
@@ -67,6 +82,10 @@ class Majax {
         requestInstance.send()
     }
 
+    /**
+     * @description global api for request, config
+     * */
+
     public setRequestInterceptor(interceptor) {
         this._requestInterceptor = interceptor
     }
@@ -75,31 +94,31 @@ class Majax {
         this._responseInterceptor = interceptor
     }
 
-    /**
-     * 1. return promise
-     * 2. return request instance (idea)
-     * */
     public request(opts) {
         return new Promise((resolve, reject) => {
             // init request instance & mixin resolve and reject
             // start request flow
-            this.runReq(
-                new MRequest(opts, resolve, reject)
+            this._runReq(
+                new MRequest(mergeConfig(this.config, opts), resolve, reject)
             )
         })
     }
 
-    public get(opts) {
+    public get(url, opts = {}) {
         return this.request({
             ...opts,
-            methods: GET_FLAG
+            url,
+            method: GET_FLAG
         })
     }
 
-    public post(opts) {
+    public post(url, opts) {
         return this.request({
             ...opts,
-            methods: POST_FLAG
+            url,
+            method: POST_FLAG
         })
     }
 }
+
+export default new Majax()

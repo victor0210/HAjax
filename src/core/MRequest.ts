@@ -4,7 +4,7 @@ import Majax from "./Majax";
 import {STATE_DONE} from "../config/readyState";
 
 export default class MRequest {
-    private _uuid: Number = Math.random() * 10e9
+    private _uuid: Number = ~~(Math.random() * 10e8)
     // `url` is the server URL that will be used for the request
     url: String
 
@@ -46,6 +46,9 @@ export default class MRequest {
     // `_xhr` is ajax request driver
     xhr: XMLHttpRequest
 
+    // `config` is what pass through the whole request flow
+    config: Object
+
     // `_majaxInstance` driver of this request, inject by visit
     _majaxInstance: Majax
 
@@ -55,7 +58,11 @@ export default class MRequest {
     // `_onFailed`
     _onFailed: Function
 
-    constructor(config, onFulfilled, onFailed) {
+    constructor (
+        config,
+        onFulfilled,
+        onFailed
+    ) {
         this.url = config.url
         this.method = config.method
         this.baseURL= config.baseURL
@@ -64,9 +71,9 @@ export default class MRequest {
         this.data= config.data
         this.timeout= config.timeout
         this.withCredentials= config.withCredentials
+        this.config = config
         this._onFulfilled = onFulfilled
         this._onFailed = onFailed
-        this._initXHR()
     }
 
     private _initXHR() {
@@ -75,8 +82,13 @@ export default class MRequest {
 
         xhr.onreadystatechange = () => {
             if (xhr.readyState == STATE_DONE){
-                this._majaxInstance.runResp(new MResponse(xhr.response, this))
-                // alert(JSON.stringify(xhr.response, null, 2))
+                console.log(xhr)
+                this._majaxInstance._runResp(
+                    new MResponse(
+                        xhr,
+                        this
+                    )
+                )
             }
         }
 
@@ -100,6 +112,8 @@ export default class MRequest {
     }
 
     public send() {
+        this._initXHR()
+
         this.xhr.send(JSON.stringify(this.data))
     }
 }

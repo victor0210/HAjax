@@ -1,3 +1,5 @@
+import {RESPONSE_TYPE_JSON} from "./responseTypes";
+
 export default {
     // url prefix
     baseUrl: null,
@@ -15,7 +17,7 @@ export default {
     timeout: 0,
 
     // responseType
-    responseType: 'json',
+    responseType: RESPONSE_TYPE_JSON,
 
     // storeStrategy
     storeStrategy: null

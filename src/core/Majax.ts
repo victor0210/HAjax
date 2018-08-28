@@ -16,7 +16,7 @@ class Majax {
 
     private _responseInterceptor: Function
 
-    private _requestPool: {}
+    private readonly _requestPool: {}
 
     private _requestDealTarget: MRequest
 
@@ -67,7 +67,8 @@ class Majax {
         delete this._requestPool[responseInstance.request.getUUID()]
 
         this._emitResponseFlow()
-        if (/^[2]/.test(responseInstance.code)) {
+
+        if (/^[2]/.test(responseInstance.status)) {
             responseInstance.completeWithFulfilled()
         } else {
             responseInstance.completeWithFailed()

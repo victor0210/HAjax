@@ -1,7 +1,7 @@
 import createXHR from '../../utils/createXHR'
 import MResponse from "./MResponse";
-import Majax from "./Majax";
 import {STATE_DONE} from "../config/readyState";
+import Majax from "./Majax";
 
 export default class MRequest {
     private _uuid: Number = ~~(Math.random() * 10e8)
@@ -71,6 +71,7 @@ export default class MRequest {
         this.data= config.data
         this.timeout= config.timeout
         this.withCredentials= config.withCredentials
+        this.responseType = config.responseType
         this.config = config
         this._onFulfilled = onFulfilled
         this._onFailed = onFailed
@@ -82,7 +83,6 @@ export default class MRequest {
 
         xhr.onreadystatechange = () => {
             if (xhr.readyState == STATE_DONE){
-                console.log(xhr)
                 this._majaxInstance._runResp(
                     new MResponse(
                         xhr,

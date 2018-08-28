@@ -1,4 +1,5 @@
 import MRequest from "./MRequest";
+import transferResponseData from "../../utils/transferResponseData";
 
 export default class MResponse {
 
@@ -29,15 +30,15 @@ export default class MResponse {
         this.statusText = completedXhr.statusText
         this.headers = requestInstance.headers
         this.config = requestInstance.config
-        this.data = completedXhr.statusText
+        this.data = transferResponseData(completedXhr)
         this.request = requestInstance
     }
 
-    completeWithFulfilled() {
+    public completeWithFulfilled() {
         this.request.success(this)
     }
 
-    completeWithFailed() {
+    public completeWithFailed() {
         this.request.failed(this)
     }
 }

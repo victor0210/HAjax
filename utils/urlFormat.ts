@@ -1,7 +1,7 @@
 import {
     AND_MARK, EMPTY, END_SLASH, EQUAL_MARK, MULTIPLE_SLASH, QUESTION_MARK, SINGE_SLASH,
     URL_PREFIX
-} from "../src/regexp";
+} from "../src/config/regexp";
 
 const urlFormat = (
     baseUrl: String,

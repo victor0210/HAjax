@@ -4,6 +4,7 @@ import {GET_FLAG, POST_FLAG} from "../config/requestMethods";
 import MRequest from "./MRequest";
 import Queue from "../impelments/Queue";
 import MResponse from "./MResponse";
+import {RESP_SUCCESS_CODE_PREFIX} from "../config/regexp";
 
 class Majax {
     private _store: Object
@@ -16,7 +17,7 @@ class Majax {
 
     private _responseInterceptor: Function
 
-    private readonly _requestPool: {}
+    private _requestPool: {}
 
     private _requestDealTarget: MRequest
 
@@ -68,7 +69,7 @@ class Majax {
 
         this._emitResponseFlow()
 
-        if (/^[2]/.test(responseInstance.status)) {
+        if (RESP_SUCCESS_CODE_PREFIX.test(responseInstance.status)) {
             responseInstance.completeWithFulfilled()
         } else {
             responseInstance.completeWithFailed()

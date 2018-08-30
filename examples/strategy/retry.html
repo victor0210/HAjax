@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../../dist/bundle.js"></script>
+</head>
+<body>
+<script>
+    mx.setStrategy(
+    	mx.createStrategy('*')
+    )
+
+	mx.get('http://xxx.test/index.php', {
+		retryLimit: 3
+	}).then(resp => {
+		console.log('success', resp)
+	}).catch(resp => {
+		console.log('failed---1', resp)
+	})
+
+	mx.get('http://xxx.test/index.php').then(resp => {
+		console.log('success', resp)
+	}).catch(resp => {
+		console.log('failed----2', resp)
+	})
+</script>
+</body>
+</html>

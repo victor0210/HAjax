@@ -15,6 +15,9 @@ export default {
     // mode: default: null, 'debounce', 'throttle'
     mode: null,
 
+    // count of auto retry bad request
+    retryLimit: 0,
+
     // action when mode is 'debounce'
     debounceTime: 300,
 

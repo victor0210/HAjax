@@ -4,6 +4,7 @@ import Majax from "./Majax";
 import findMatchStrategy from "../utils/findMatchStrategy";
 import {GET_FLAG} from "../config/requestMethods";
 import urlFormat from "../utils/urlFormat";
+import {RESP_SUCCESS_CODE_PREFIX} from "../config/regexp";
 
 export default class MRequest {
     // `_uuid`
@@ -91,6 +92,10 @@ export default class MRequest {
     // abort flag for concurrent requests buffer area
     public aborted: Boolean
 
+    // `retryLimit`
+    // resend another request if has a bad response
+    public retryLimit: Number
+
     // `mode`
     // more confidence to make request 'debounce' or 'throttle'
     public mode: String
@@ -108,6 +113,7 @@ export default class MRequest {
         this.headers = config.headers
         this.params = config.params
         this.mode = config.mode
+        this.retryLimit = config.retryLimit
         this.debounceTime = config.debounceTime
         this.throttleTime = config.throttleTime
         this.data = config.data
@@ -255,12 +261,26 @@ export default class MRequest {
         //handle request complete async
         xhr.onreadystatechange = () => {
             if (xhr.readyState == STATE_DONE) {
-                this.majaxInstance._runResp(
-                    new MResponse(
-                        xhr,
-                        this
+                // bad request do retry
+                if (
+                    !RESP_SUCCESS_CODE_PREFIX.test(xhr.status.toString()) &&
+                    this.retryLimit > 0
+                ) {
+                    this.sendAjax()
+                    this.retryLimit--
+
+                    // if xhr has already in 'majax' store, just cover it with new xhr
+                    if (this.majaxInstance.store[this.fullUrl] &&
+                        this.majaxInstance.store[this.fullUrl].xhr === xhr
+                    ) this.majaxInstance.store[this.fullUrl].xhr = this.xhr
+                } else {
+                    this.majaxInstance._runResp(
+                        new MResponse(
+                            xhr,
+                            this
+                        )
                     )
-                )
+                }
             }
         }
 

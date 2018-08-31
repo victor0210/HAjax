@@ -110,8 +110,8 @@ class Majax {
                 hasCache: false,
                 xhr: requestInstance.initXHR(),
                 listeners: [],
-                debounce: rule.debounce,
-                expires: new Date().getTime() + rule.debounce
+                maxAge: rule.maxAge,
+                expires: new Date().getTime() + rule.maxAge
             }
 
             requestInstance.xhr.send(JSON.stringify(requestInstance.data))
@@ -128,7 +128,7 @@ class Majax {
         // auto fetch data from store
         if (this._store[requestInstance.url].hasCache) {
             if (
-                this._store[requestInstance.url].debounce &&
+                this._store[requestInstance.url].maxAge &&
                 new Date().getTime() <= this._store[requestInstance.url].expires
             ) {
                 // check cache expire
@@ -141,9 +141,9 @@ class Majax {
 
     public checkStoreExpired(url) {
         if (!this._store[url]) return true
-        if (!this._store[url].debounce) return true
+        if (!this._store[url].maxAge) return true
 
-        if (this._store[url].debounce) {
+        if (this._store[url].maxAge) {
             return (new Date().getTime() > this._store[url].expires)
         }
     }

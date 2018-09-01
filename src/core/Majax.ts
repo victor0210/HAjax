@@ -7,22 +7,41 @@ import MResponse from "./MResponse";
 import {RESP_SUCCESS_CODE_PREFIX} from "../config/regexp";
 
 class Majax {
+    // `_store`
+    // store is the cache pool for every request which match store strategy rule
     private _store: Object
 
+    // `_requestQueue`
+    // for request instance ordered processing
     private _requestQueue: Queue
 
+    // `_requestQueue`
+    // for response instance ordered processing
     private _responseQueue: Queue
 
+    // `_requestInterceptor`
+    // the last chance to custom request config
+    // do something specific before request
     private _requestInterceptor: Function
 
+    // `_responseInterceptor`
+    // do something specific before request
     private _responseInterceptor: Function
 
-    private _requestPool: {}
+    // `_requestPool`: Reserved field
+    // contain all 'SENDING_STATE' request instance
+    private _requestPool: Object
 
+    // `_requestDealTarget`
+    // this is a request instance who is dealing and only one instance can be deal at the same time
     private _requestDealTarget: MRequest
 
+    // `_responseDealTarget`
+    // this is a response instance who is dealing and only one instance can be deal at the same time
     private _responseDealTarget: MResponse
 
+    // `config`
+    // global config bind on a majax instance, which will inject into every request instance
     public config: Object
 
     constructor(opts = {}) {
@@ -34,12 +53,21 @@ class Majax {
         this._requestDealTarget = null
     }
 
-    public _runReq(requestInstance) {
+    /**
+     * @desc entry of request, request enqueue
+     * @param requestInstance
+     * */
+    public _runReq(requestInstance: MRequest) {
+        // inject majax driver into request instance
         requestInstance.accept(this)
+
         this._requestQueue.enqueue(requestInstance)
         this._emitRequestFlow()
     }
 
+    /**
+     * @desc check and unqueue request into request pool
+     * */
     private _emitRequestFlow() {
         if (!this._requestDealTarget && this._requestQueue.hasNext()) {
             this._requestDealTarget = this._requestQueue.unqueue()
@@ -48,7 +76,11 @@ class Majax {
         }
     }
 
-    public _runResp(responseInstance) {
+    /**
+     * @desc entry of response, response enqueue
+     * @param responseInstance
+     * */
+    public _runResp(responseInstance: MResponse) {
         this._responseQueue.enqueue(responseInstance)
         this._emitResponseFlow()
 
@@ -66,6 +98,9 @@ class Majax {
         }
     }
 
+    /**
+     * @desc check and unqueue response into request pool
+     * */
     private _emitResponseFlow() {
         if (!this._responseDealTarget && this._responseQueue.hasNext()) {
             this._responseDealTarget = this._responseQueue.unqueue()
@@ -74,20 +109,29 @@ class Majax {
         }
     }
 
-    private _handleComplete(responseInstance) {
+    /**
+     * @desc deal with complete response instance and emit callback
+     * @param responseInstance
+     * */
+    private _handleComplete(responseInstance: MResponse) {
         this._responseDealTarget = null
         delete this._requestPool[responseInstance.request.getUUID()]
 
         this._emitResponseFlow()
 
-        if (RESP_SUCCESS_CODE_PREFIX.test(responseInstance.status)) {
+        if (RESP_SUCCESS_CODE_PREFIX.test(responseInstance.status.toString())) {
             responseInstance.completeWithFulfilled()
         } else {
             responseInstance.completeWithFailed()
         }
     }
 
-    private _pushToRequestPool(requestInstance) {
+    /**
+     * Reserved field
+     * @desc just a collection of request which on sending
+     * @param requestInstance
+     * */
+    private _pushToRequestPool(requestInstance: MRequest) {
         this._requestPool[requestInstance.getUUID()] = requestInstance
         this._requestDealTarget = null
         requestInstance.send()
@@ -95,6 +139,11 @@ class Majax {
         this._emitRequestFlow()
     }
 
+    /**
+     * @desc Determine if the cache policy is matched and determine the form of the request (Ajax or Cache)
+     * @param rule
+     * @param requestInstance
+     * */
     public storeWithRule(rule, requestInstance) {
         const runRespWithStore = () => {
             this._runResp(
@@ -125,13 +174,11 @@ class Majax {
 
         this._store[requestInstance.url].listeners.push(requestInstance)
 
-        // auto fetch data from store
         if (this._store[requestInstance.url].hasCache) {
             if (
                 this._store[requestInstance.url].maxAge &&
                 new Date().getTime() <= this._store[requestInstance.url].expires
             ) {
-                // check cache expire
                 runRespWithStore()
             } else {
                 runRespWithStore()
@@ -139,6 +186,10 @@ class Majax {
         }
     }
 
+    /**
+     * @desc check store if match rush strategy
+     * @param url
+     * */
     public checkStoreExpired(url) {
         if (!this._store[url]) return true
         if (!this._store[url].maxAge) return true
@@ -148,18 +199,28 @@ class Majax {
         }
     }
 
-    /**
-     * @description global api for request, config
-     * */
+    // ---------------------- global api recommended to users ----------------------
 
-    public setRequestInterceptor(interceptor) {
+    /**
+     * @desc interceptor before request send
+     * @param interceptor
+     * */
+    public setRequestInterceptor(interceptor: Function) {
         this._requestInterceptor = interceptor
     }
 
-    public setResponseInterceptor(interceptor) {
+    /**
+     * @desc interceptor after response and before callback emitted
+     * @param interceptor
+     * */
+    public setResponseInterceptor(interceptor: Function) {
         this._responseInterceptor = interceptor
     }
 
+    /**
+     * @desc global request api
+     * @param opts
+     * */
     public request(opts) {
         return new Promise((resolve, reject) => {
             // init request instance & mixin resolve and reject

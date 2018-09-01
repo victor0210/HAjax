@@ -30,14 +30,14 @@
 			console.log('failed', resp)
 		})
 
-			setTimeout(() => {
-				//get
-				mx.get('http://majax.test/index.php').then(resp => {
-					console.log('success', resp)
-				}).catch(resp => {
-					console.log('failed', resp)
-				})
-			}, 3000)
+		setTimeout(() => {
+			//get
+			mx.get('http://majax.test/index.php').then(resp => {
+				console.log('success', resp)
+			}).catch(resp => {
+				console.log('failed', resp)
+			})
+		}, 3000)
 	}, 3000)
 
 

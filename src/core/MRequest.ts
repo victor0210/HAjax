@@ -132,7 +132,6 @@ export default class MRequest {
 
             if (rule) {
                 this.withRushStore = this._majaxInstance.checkStoreExpired(this.url)
-                console.log(this.withRushStore, 'withRushStore', new Date().getTime())
                 this._majaxInstance.storeWithRule(rule, this)
             }
         } else {

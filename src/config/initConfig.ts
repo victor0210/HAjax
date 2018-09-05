@@ -9,6 +9,8 @@ export default {
         'Content-Type': 'application/json'
     },
 
+    url: '',
+
     // auto force send cookie auth to server
     // default false
     withCredentials: false,
@@ -17,8 +19,5 @@ export default {
     timeout: 0,
 
     // responseType
-    responseType: RESPONSE_TYPE_JSON,
-
-    // storeStrategy, accept Strategy instance
-    storeStrategy: null
+    responseType: RESPONSE_TYPE_JSON
 }

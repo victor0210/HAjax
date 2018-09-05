@@ -8,12 +8,10 @@
 </head>
 <body>
 <script>
-	mx.config.storeStrategy = [
-		{
-			url: '*',
-			maxAge: 4000
-		}
-	]
+	mx.setStrategy({
+		url: '*',
+		maxAge: 4000
+	})
 
 	//get
 	mx.get('http://majax.test/index.php').then(resp => {

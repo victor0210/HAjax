@@ -1,5 +1,5 @@
 import defaults from '../config/initConfig'
-import mergeConfig from "../../utils/mergeConfig";
+import mergeConfig from "../utils/mergeConfig";
 import {GET_FLAG, POST_FLAG} from "../config/requestMethods";
 import MRequest from "./MRequest";
 import Queue from "../impelments/Queue";
@@ -39,6 +39,13 @@ class Majax {
     // `requestPool`: Reserved field
     // contain all 'SENDING_STATE' request instance
     public requestPool: Object
+
+    // `storeStrategy`
+    // majax cache strategy, valid key can be "url", "maxAge"
+    // store strategy is very special because it has debounce check
+    // you don't worry the blow requests sending to server without the first request complete
+    // they will be pushed to cache listener and waiting for the first request complete
+    public storeStrategy: null
 
     // `config`
     // global config bind on a majax instance, which will inject into every request instance
@@ -223,10 +230,12 @@ class Majax {
      * */
     public request(opts) {
         return new Promise((resolve, reject) => {
-            // init request instance & mixin resolve and reject
-            // start request flow
             this._runReq(
-                new MRequest(mergeConfig(this.config, opts), resolve, reject)
+                new MRequest(
+                    mergeConfig(this.config, opts),
+                    resolve,
+                    reject
+                 )
             )
         })
     }
@@ -246,6 +255,20 @@ class Majax {
             method: POST_FLAG
         })
     }
+
+    /**
+     * @desc set new store strategy for driver, which could cover the old strategy
+     * @param strategy
+     * */
+    public setStrategy(strategy) {
+        this.storeStrategy = strategy
+    }
+
+    /**
+     * @desc clear data in store by hand
+     * @param exp: valid value is "string", "Regexp", "*"
+     * */
+    // public clearStore(exp) {}
 }
 
 export default new Majax()

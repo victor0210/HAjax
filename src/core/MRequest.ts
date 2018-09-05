@@ -1,10 +1,9 @@
-import createXHR from '../../utils/createXHR'
 import MResponse from "./MResponse";
 import {STATE_DONE} from "../config/readyState";
 import Majax from "./Majax";
-import findMatchStrategy from "../../utils/findMatchStrategy";
+import findMatchStrategy from "../utils/findMatchStrategy";
 import {GET_FLAG} from "../config/requestMethods";
-import urlFormat from "../../utils/urlFormat";
+import urlFormat from "../utils/urlFormat";
 
 export default class MRequest {
     // `_uuid`
@@ -138,8 +137,8 @@ export default class MRequest {
      * 4. catch data from cache and response
      * */
     public send() {
-        if (this.method.toLowerCase() === GET_FLAG && this.config.storeStrategy) {
-            let rule = findMatchStrategy(this.config.storeStrategy, this.url)
+        if (this.method.toLowerCase() === GET_FLAG && this.majaxInstance.storeStrategy) {
+            let rule = findMatchStrategy(this.majaxInstance.storeStrategy, this.url)
 
             if (rule) {
                 this.withRushStore = this.majaxInstance.checkStoreExpired(this.url)

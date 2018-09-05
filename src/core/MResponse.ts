@@ -1,5 +1,5 @@
 import MRequest from "./MRequest";
-import transferResponseData from "../../utils/transferResponseData";
+import transferResponseData from "../utils/transferResponseData";
 
 export default class MResponse {
     // `data`
@@ -24,7 +24,7 @@ export default class MResponse {
     config: Object
 
     // `request`
-    // is Request instance
+    // MRequest instance which produce this response
     request: MRequest
 
     constructor(completedXhr, requestInstance) {

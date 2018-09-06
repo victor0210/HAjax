@@ -24,6 +24,10 @@ export default class MRequest {
     // to methods of that instance.
     baseURL: String
 
+    // `fullUrl`
+    //  The actual requested url combined by baseUrl and url before send out
+    fullUrl: String
+
     // `headers`
     // custom headers to be sent
     headers: Object
@@ -137,11 +141,16 @@ export default class MRequest {
      * 4. catch data from cache and response
      * */
     public send() {
+        this.fullUrl = urlFormat(this.config.baseUrl, this.config.url, this.config.params)
+
+        // only request with get method could be cached
+        // it might be put or others later
         if (this.method.toLowerCase() === GET_FLAG && this.majaxInstance.storeStrategy) {
-            let rule = findMatchStrategy(this.majaxInstance.storeStrategy, this.url)
+            const urlKey = this.fullUrl
+            let rule = findMatchStrategy(this.majaxInstance.storeStrategy, urlKey)
 
             if (rule) {
-                this.withRushStore = this.majaxInstance.checkStoreExpired(this.url)
+                this.withRushStore = this.majaxInstance.checkStoreExpired(urlKey)
                 this.majaxInstance.storeWithRule(rule, this)
             }
         } else {
@@ -151,13 +160,19 @@ export default class MRequest {
 
     /**
      * @desc XMLHttpRequest initial: use fetch?
+     * @attention If you add other ajax drivers(fetch or ActiveXObject) later, you need to provide a facade here.
      * */
     public initXHR() {
+        /*
+        * // facade like blow:
+        * const xhr = new XMLHttpRequest(); ======> const driver = initAjaxDriver(config) // do init with config
+        * this.xhr = xhr ======> this.driver = driver
+        * */
         const xhr = new XMLHttpRequest();
 
         xhr.open(
             this.config.method.toUpperCase(),
-            urlFormat(this.config.baseUrl, this.config.url, this.config.params)
+            this.fullUrl
         )
 
         //headers
@@ -193,6 +208,7 @@ export default class MRequest {
 
     /**
      * @desc ajax real action
+     * @attention If you add other ajax drivers(fetch or ActiveXObject) later, you need to provide a facade here.
      * */
     public sendAjax() {
         this.initXHR()

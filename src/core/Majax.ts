@@ -17,6 +17,17 @@ class Majax {
 
     // `store`
     // store is the cache pool for every request which match store strategy rule
+    // The data model is as follows:
+    // {
+    //   test.demo.com: {                                   // key is must be the cache full url (with params)
+    //     hasCache: Boolean,                               // if has cache data here
+    //     xhr: XMLHttpRequest,                             // Cached Data, which is a XMLHttpRequest instance
+    //     concurrentBuffer: [RequestInstance, ...],        // Buffer Area for concurrent requests
+    //     bufferTime: 3000(ms),                            // Buffer duration
+    //     expires: new Date().getTime() + rule.bufferTime  // cache or buffer expire time
+    //   }
+    //   ...
+    // }
     public store: Object
 
     // `requestQueue`
@@ -41,7 +52,7 @@ class Majax {
     public requestPool: Object
 
     // `storeStrategy`
-    // majax cache strategy, valid key can be "url", "maxAge"
+    // majax cache strategy, valid key can be "url", "bufferTime"
     // store strategy is very special because it has debounce check
     // you don't worry the blow requests sending to server without the first request complete
     // they will be pushed to cache listener and waiting for the first request complete
@@ -90,14 +101,20 @@ class Majax {
     public _runResp(responseInstance: MResponse) {
         this.responseQueue.enqueue(responseInstance)
         this._emitResponseFlow()
+        const urlKey = responseInstance.request.fullUrl
 
-        if (responseInstance.request.withRushStore) {
-            this.store[responseInstance.request.url].hasCache = true
-            while (this.store[responseInstance.request.url].listeners.length > 0) {
-                let req = this.store[responseInstance.request.url].listeners.shift()
+        if (
+            responseInstance.request.withRushStore &&
+            responseInstance.request.xhr === this.store[urlKey].xhr
+        ) {
+            const cache = this.store[urlKey]
+
+            cache.hasCache = true
+            while (cache.concurrentBuffer.length > 0) {
+                let req = cache.concurrentBuffer.shift()
                 this._runResp(
                     new MResponse(
-                        this.store[responseInstance.request.url].xhr,
+                        cache.xhr,
                         req
                     )
                 )
@@ -152,57 +169,86 @@ class Majax {
      * @param requestInstance
      * */
     public storeWithRule(rule, requestInstance) {
+        let cache = this.store[requestInstance.fullUrl]
+
         const runRespWithStore = () => {
             this._runResp(
                 new MResponse(
-                    this.store[requestInstance.url].xhr,
+                    cache.xhr,
                     requestInstance
                 )
             )
         }
 
-        if (!this.store[requestInstance.url]) {
-            this.store[requestInstance.url] = {
-                hasCache: false,
-                xhr: requestInstance.initXHR(),
-                listeners: [],
-                maxAge: rule.maxAge,
-                expires: new Date().getTime() + rule.maxAge
-            }
+        // Turn on an actual request if there is no cache or the request needs to flush the cache
+        // If the first request is being requested and the cache time exceeds expires at this time
+        // the next request will overwrite the data being cached at this time and the new data
+        // will be used to trigger the callback handler of the request instance in concurrentBuffer
+        // which may be Producing bugs what is the callback in concurrentBuffer action delay or not work
+        // strategies for this extreme situation remain to be considered
+        // When you encounter this situation, you can set the bufferTime longer
+        // or disable store strategy for the trouble url
 
-            requestInstance.xhr.send(JSON.stringify(requestInstance.data))
+        if (!cache || requestInstance.withRushStore) return this.rushRequest(rule, requestInstance)
 
-            return
-        }
+        cache.concurrentBuffer.push(requestInstance)
 
-        if (requestInstance.withRushStore) {
-            requestInstance.sendAjax()
-        }
-
-        this.store[requestInstance.url].listeners.push(requestInstance)
-
-        if (this.store[requestInstance.url].hasCache) {
-            if (
-                this.store[requestInstance.url].maxAge &&
-                new Date().getTime() <= this.store[requestInstance.url].expires
-            ) {
-                runRespWithStore()
+        if (cache.hasCache) {
+            if (cache.bufferTime) {
+                if (new Date().getTime() <= cache.expires) runRespWithStore()
             } else {
                 runRespWithStore()
             }
         }
     }
 
+    public rushRequest(rule, requestInstance) {
+        requestInstance.sendAjax()
+
+        this.rushStore(
+            requestInstance.fullUrl,
+            requestInstance.xhr,
+            rule.bufferTime
+        )
+
+        return
+    }
+
     /**
      * @desc check store if match rush strategy
      * @param url
      * */
-    public checkStoreExpired(url) {
+    public checkStoreExpired(url: String) {
         if (!this.store[url]) return true
-        if (!this.store[url].maxAge) return true
+        if (!this.store[url].bufferTime) return true
 
-        if (this.store[url].maxAge) {
+        if (this.store[url].bufferTime) {
             return (new Date().getTime() > this.store[url].expires)
+        }
+    }
+
+    /**
+     * @desc init or rush old store
+     * @param key: request fullpath
+     * @param xhr
+     * @param bufferTime
+     * */
+    public rushStore(key: String, xhr: XMLHttpRequest, bufferTime: Number) {
+        if (!this.store[key]) {
+            this.store[key] = {
+                hasCache: false,
+                xhr: xhr,
+                concurrentBuffer: [],
+                bufferTime: bufferTime,
+                expires: new Date().getTime() + bufferTime
+            }
+        } else {
+            this.store[key] = {
+                ...this.store[key],
+                xhr: xhr,
+                expires: new Date().getTime() + bufferTime
+                // bufferTime: bufferTime,          // if need rush bufferTime for user update ?
+            }
         }
     }
 
@@ -235,7 +281,7 @@ class Majax {
                     mergeConfig(this.config, opts),
                     resolve,
                     reject
-                 )
+                )
             )
         })
     }
@@ -261,6 +307,7 @@ class Majax {
      * @param strategy
      * */
     public setStrategy(strategy) {
+        // TODO: validation of param
         this.storeStrategy = strategy
     }
 
@@ -268,7 +315,14 @@ class Majax {
      * @desc clear data in store by hand
      * @param exp: valid value is "string", "Regexp", "*"
      * */
-    // public clearStore(exp) {}
+    // public clearStore(exp?) {
+    //     if (!exp) {
+    //         // callbacks would not work if clear with follow
+    //         // strategies for concurrentBuffer when clear action is remain to be considered
+    //         // TODO: strategies for clear
+    //         this.store = null
+    //     }
+    // }
 }
 
 export default new Majax()

@@ -5,6 +5,10 @@ import MRequest from "./MRequest";
 import Queue from "../impelments/Queue";
 import MResponse from "./MResponse";
 import {RESP_SUCCESS_CODE_PREFIX} from "../config/regexp";
+import {containedInArr, matchType} from "../utils/matcher";
+import {throwIf, warnIf} from "../utils/conditionCheck";
+import {DEBOUNCE, THROTTLE} from "../config/storeMode";
+import {TYPE_OBJECT} from "../config/baseType";
 
 class Majax {
     // `_requestDealTarget`
@@ -30,6 +34,10 @@ class Majax {
     // }
     public store: Object
 
+    public throttleStore: Object
+
+    public debounceStore: Object
+
     // `requestQueue`
     // for request instance ordered processing
     public requestQueue: Queue
@@ -53,7 +61,7 @@ class Majax {
 
     // `storeStrategy`
     // majax cache strategy, valid key can be "url", "bufferTime"
-    // store strategy is very special because it has debounce check
+    // store strategy is very special because it has Multiple-Request optimization such as 'debounce' and 'throttle'
     // you don't worry the blow requests sending to server without the first request complete
     // they will be pushed to cache listener and waiting for the first request complete
     public storeStrategy: null
@@ -274,16 +282,79 @@ class Majax {
      * @desc global request api
      * @param opts
      * */
-    public request(opts) {
+    public request(opts: Object) {
+        // check if match debounce or throttle strategies
+        throwIf(
+            matchType(opts, TYPE_OBJECT),
+            `request options type except to be [${TYPE_OBJECT}] but got [${typeof opts}]`
+        )
+
+        const options = mergeConfig(this.config, opts)
+
+        // validate request mode and fix
+        const {mode} = options
+
+        if (mode) {
+            const modeIsValid = containedInArr(mode, [DEBOUNCE, THROTTLE])
+
+            warnIf(
+                !modeIsValid,
+                `mode [${mode}"] is invalid, it support to be "${DEBOUNCE}" or "${THROTTLE}"`
+            )
+
+            if (!modeIsValid) delete options.mode
+        }
+
         return new Promise((resolve, reject) => {
             this._runReq(
                 new MRequest(
-                    mergeConfig(this.config, opts),
+                    options,
                     resolve,
                     reject
                 )
             )
         })
+
+        // switch (mode) {
+        //     case DEBOUNCE:
+        //         if (!this.debounceStore[url])
+        //             this.debounceStore[url] = {
+        //                 ban: false,
+        //                 timer: null
+        //             }
+        //
+        //         const debounce = this.debounceStore[url]
+        //
+        //         if (!debounce.ban) {
+        //             clearTimeout(debounce.timer)
+        //
+        //             debounce.timer = setTimeout(() => {
+        //                 debounce.ban = false
+        //             }, debounceTime)
+        //         } else {
+        //             debounce.ban = true
+        //             return requestAction()
+        //         }
+        //         break
+        //     case THROTTLE:
+        //         if (!this.throttleStore[url])
+        //             this.throttleStore[url] = {
+        //                 ban: false
+        //             }
+        //
+        //         const throttle = this.throttleStore[url]
+        //
+        //         if (!throttle.ban) {
+        //             throttle.ban = true
+        //             setTimeout(() => {
+        //                 throttle.ban = false
+        //             }, throttleTime)
+        //             return requestAction()
+        //         }
+        //         break
+        //     default:
+        //         return requestAction()
+        // }
     }
 
     public get(url, opts = {}) {
@@ -294,7 +365,7 @@ class Majax {
         })
     }
 
-    public post(url, opts) {
+    public post(url, opts = {}) {
         return this.request({
             ...opts,
             url,

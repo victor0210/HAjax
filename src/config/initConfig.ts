@@ -9,7 +9,17 @@ export default {
         'Content-Type': 'application/json'
     },
 
+    // request server url
     url: '',
+
+    // mode: default: null, 'debounce', 'throttle'
+    mode: null,
+
+    // action when mode is 'debounce'
+    debounceTime: 3000,
+
+    // action when mode is 'throttle'
+    throttleTime: 3000,
 
     // auto force send cookie auth to server
     // default false

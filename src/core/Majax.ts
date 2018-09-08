@@ -285,7 +285,7 @@ class Majax {
     public request(opts: Object) {
         // check if match debounce or throttle strategies
         throwIf(
-            matchType(opts, TYPE_OBJECT),
+            !matchType(opts, TYPE_OBJECT),
             `request options type except to be [${TYPE_OBJECT}] but got [${typeof opts}]`
         )
 

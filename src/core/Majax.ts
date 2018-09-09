@@ -89,6 +89,49 @@ class Majax {
 
         this.requestQueue.enqueue(requestInstance)
         this._emitRequestFlow()
+
+        // const {mode, url} = requestInstance
+        //
+        // switch (mode) {
+        //     case DEBOUNCE:
+        //         if (!this.debounceStore[url])
+        //             this.debounceStore[url] = {
+        //                 ban: false,
+        //                 timer: null
+        //             }
+        //
+        //         const debounce = this.debounceStore[url]
+        //
+        //         if (!debounce.ban) {
+        //             clearTimeout(debounce.timer)
+        //
+        //             debounce.timer = setTimeout(() => {
+        //                 debounce.ban = false
+        //             }, debounceTime)
+        //         } else {
+        //             debounce.ban = true
+        //             return requestAction()
+        //         }
+        //         break
+        //     case THROTTLE:
+        //         if (!this.throttleStore[url])
+        //             this.throttleStore[url] = {
+        //                 ban: false
+        //             }
+        //
+        //         const throttle = this.throttleStore[url]
+        //
+        //         if (!throttle.ban) {
+        //             throttle.ban = true
+        //             setTimeout(() => {
+        //                 throttle.ban = false
+        //             }, throttleTime)
+        //             return requestAction()
+        //         }
+        //         break
+        //     default:
+        //         return requestAction()
+        // }
     }
 
     /**
@@ -107,8 +150,11 @@ class Majax {
      * @param responseInstance
      * */
     public _runResp(responseInstance: MResponse) {
-        this.responseQueue.enqueue(responseInstance)
-        this._emitResponseFlow()
+        if (!responseInstance.request.aborted) {
+            this.responseQueue.enqueue(responseInstance)
+            this._emitResponseFlow()
+        }
+
         const urlKey = responseInstance.request.fullUrl
 
         if (
@@ -120,7 +166,8 @@ class Majax {
             cache.hasCache = true
             while (cache.concurrentBuffer.length > 0) {
                 let req = cache.concurrentBuffer.shift()
-                this._runResp(
+
+                !req.aborted && this._runResp(
                     new MResponse(
                         cache.xhr,
                         req
@@ -305,56 +352,13 @@ class Majax {
             if (!modeIsValid) delete options.mode
         }
 
-        return new Promise((resolve, reject) => {
-            this._runReq(
-                new MRequest(
-                    options,
-                    resolve,
-                    reject
-                )
-            )
+        const request = new MRequest(options)
+
+        setTimeout(() => {
+            this._runReq(request)
         })
 
-        // switch (mode) {
-        //     case DEBOUNCE:
-        //         if (!this.debounceStore[url])
-        //             this.debounceStore[url] = {
-        //                 ban: false,
-        //                 timer: null
-        //             }
-        //
-        //         const debounce = this.debounceStore[url]
-        //
-        //         if (!debounce.ban) {
-        //             clearTimeout(debounce.timer)
-        //
-        //             debounce.timer = setTimeout(() => {
-        //                 debounce.ban = false
-        //             }, debounceTime)
-        //         } else {
-        //             debounce.ban = true
-        //             return requestAction()
-        //         }
-        //         break
-        //     case THROTTLE:
-        //         if (!this.throttleStore[url])
-        //             this.throttleStore[url] = {
-        //                 ban: false
-        //             }
-        //
-        //         const throttle = this.throttleStore[url]
-        //
-        //         if (!throttle.ban) {
-        //             throttle.ban = true
-        //             setTimeout(() => {
-        //                 throttle.ban = false
-        //             }, throttleTime)
-        //             return requestAction()
-        //         }
-        //         break
-        //     default:
-        //         return requestAction()
-        // }
+        return request
     }
 
     public get(url, opts = {}) {

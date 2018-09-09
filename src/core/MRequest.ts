@@ -77,6 +77,10 @@ export default class MRequest {
     // driver of this request, inject by visit
     majaxInstance: Majax
 
+    // `aborted`
+    // abort flag for concurrent requests buffer area
+    aborted: Boolean
+
     // `_onFulfilled`
     // callback with request success
     _onFulfilled: Function
@@ -85,7 +89,7 @@ export default class MRequest {
     // callback with request failed
     _onFailed: Function
 
-    constructor(config, onFulfilled, onFailed) {
+    constructor(config) {
         this.url = config.url
         this.method = config.method
         this.baseURL = config.baseURL
@@ -97,8 +101,6 @@ export default class MRequest {
         this.responseType = config.responseType
         this.config = config
         this.withRushStore = false
-        this._onFulfilled = onFulfilled
-        this._onFailed = onFailed
     }
 
     /**
@@ -115,6 +117,32 @@ export default class MRequest {
      * */
     public failed(responseInstance) {
         this._onFailed(responseInstance)
+    }
+
+    public then(onFulfilled) {
+        // will support multiple fulfilled handlers
+        this._onFulfilled = onFulfilled
+        return this
+    }
+
+    public catch(onFailed) {
+        this._onFailed = onFailed
+        return this
+    }
+
+    public abort() {
+        // for request in concurrentBuffer
+        this.aborted = true
+
+        if (this.xhr) {
+            const store = this.majaxInstance.store[this.url]
+
+            // abort directly if request is single action
+            if (
+                !store ||
+                (store && store.concurrentBuffer.length === 0)
+            ) this.xhr.abort()
+        }
     }
 
     /**
@@ -141,6 +169,9 @@ export default class MRequest {
      * 4. catch data from cache and response
      * */
     public send() {
+        // abort before send
+        if (this.aborted) return
+
         this.fullUrl = urlFormat(this.config.baseUrl, this.config.url, this.config.params)
 
         // only request with get method could be cached

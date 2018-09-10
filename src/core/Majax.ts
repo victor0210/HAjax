@@ -76,6 +76,8 @@ class Majax {
         this.requestQueue = new Queue()
         this.responseQueue = new Queue()
         this.requestPool = {}
+        this.debounceStore = {}
+        this.throttleStore = {}
         this._requestDealTarget = null
     }
 
@@ -84,54 +86,52 @@ class Majax {
      * @param requestInstance
      * */
     public _runReq(requestInstance: MRequest) {
-        // inject majax driver into request instance
-        requestInstance.accept(this)
+        const requestAction = () => {
+            // inject majax driver into request instance and start real request flow
+            requestInstance.accept(this)
 
-        this.requestQueue.enqueue(requestInstance)
-        this._emitRequestFlow()
+            this.requestQueue.enqueue(requestInstance)
+            this._emitRequestFlow()
+        }
 
-        // const {mode, url} = requestInstance
-        //
-        // switch (mode) {
-        //     case DEBOUNCE:
-        //         if (!this.debounceStore[url])
-        //             this.debounceStore[url] = {
-        //                 ban: false,
-        //                 timer: null
-        //             }
-        //
-        //         const debounce = this.debounceStore[url]
-        //
-        //         if (!debounce.ban) {
-        //             clearTimeout(debounce.timer)
-        //
-        //             debounce.timer = setTimeout(() => {
-        //                 debounce.ban = false
-        //             }, debounceTime)
-        //         } else {
-        //             debounce.ban = true
-        //             return requestAction()
-        //         }
-        //         break
-        //     case THROTTLE:
-        //         if (!this.throttleStore[url])
-        //             this.throttleStore[url] = {
-        //                 ban: false
-        //             }
-        //
-        //         const throttle = this.throttleStore[url]
-        //
-        //         if (!throttle.ban) {
-        //             throttle.ban = true
-        //             setTimeout(() => {
-        //                 throttle.ban = false
-        //             }, throttleTime)
-        //             return requestAction()
-        //         }
-        //         break
-        //     default:
-        //         return requestAction()
-        // }
+        const {mode, url, debounceTime, throttleTime} = requestInstance
+
+        // request with three type of ways: normal, debounce, throttle
+        switch (mode) {
+            case DEBOUNCE:
+                if (!this.debounceStore[url])
+                    this.debounceStore[url] = {
+                        timer: null
+                    }
+
+                const debounce = this.debounceStore[url]
+
+                if (debounce.timer) clearTimeout(debounce.timer)
+
+                debounce.timer = setTimeout(() => {
+                    requestAction()
+                    clearTimeout(debounce.timer)
+                }, debounceTime)
+                break
+            case THROTTLE:
+                if (!this.throttleStore[url])
+                    this.throttleStore[url] = {
+                        ban: false
+                    }
+
+                const throttle = this.throttleStore[url]
+
+                if (!throttle.ban) {
+                    throttle.ban = true
+                    setTimeout(() => {
+                        throttle.ban = false
+                    }, throttleTime)
+                    requestAction()
+                }
+                break
+            default:
+                requestAction()
+        }
     }
 
     /**

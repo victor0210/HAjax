@@ -16,7 +16,7 @@ export default {
     mode: null,
 
     // action when mode is 'debounce'
-    debounceTime: 3000,
+    debounceTime: 300,
 
     // action when mode is 'throttle'
     throttleTime: 3000,

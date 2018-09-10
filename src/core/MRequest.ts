@@ -81,6 +81,16 @@ export default class MRequest {
     // abort flag for concurrent requests buffer area
     aborted: Boolean
 
+    // `mode`
+    // more confidence to make request 'debounce' or 'throttle'
+    mode: String
+
+    // `debounceTime`
+    debounceTime: Number
+
+    // `throttleTime`
+    throttleTime: Number
+
     // `_onFulfilled`
     // callback with request success
     _onFulfilled: Function
@@ -95,6 +105,9 @@ export default class MRequest {
         this.baseURL = config.baseURL
         this.headers = config.headers
         this.params = config.params
+        this.mode = config.mode
+        this.debounceTime = config.debounceTime
+        this.throttleTime = config.throttleTime
         this.data = config.data
         this.timeout = config.timeout
         this.withCredentials = config.withCredentials

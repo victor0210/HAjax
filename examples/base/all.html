@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../../dist/bundle.js"></script>
+</head>
+<body>
+<script>
+	const req = () => {
+		return new Promise((resolve, reject) => {
+			mx.get('http://majax.test/index.php')
+				.then(resp => {
+					resolve(resp)
+				})
+				.catch(resp => {
+					reject(resp)
+				})
+		})
+	}
+
+	console.log(mx)
+	//get
+	mx.all([
+		req(),
+		req(),
+		req(),
+		req(),
+		req(),
+		req(),
+		req()
+	]).then(resp => {
+		console.log(resp)
+	})
+</script>
+</body>
+</html>

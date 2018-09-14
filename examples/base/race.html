@@ -20,14 +20,9 @@
 		})
 	}
 
-	mx.all([
+	mx.race([
 		req(),
 		req(),
-		req(),
-		req(),
-		req(),
-		req(),
-		req()
 	]).then(resp => {
 		console.log(resp)
 	})

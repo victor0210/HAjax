@@ -381,6 +381,10 @@ class Majax {
         return Promise.all(promises)
     }
 
+    public race(promises) {
+        return Promise.race(promises)
+    }
+
     /**
      * @desc set new store strategy for driver, which could cover the old strategy
      * @param strategy

@@ -4,30 +4,30 @@ import transferResponseData from "../utils/transferResponseData";
 export default class MResponse {
     // `data`
     // is an object transformed by response schema data
-    data: any
+    public data: any
 
     // `status`
     // is response status code
-    status: Number
+    public status: Number
 
     // `statusText`
     // is the HTTP status message from the server response `statusText` is the HTTP status message from the server respo
-    statusText: String
+    public statusText: String
 
     // `headers`
     // the headers that the server responded with
     // All header names are lower cased
-    headers: Object
+    public headers: Object
 
     // `config`
     // is the config that was provided to `majax` for the request
-    config: Object
+    public config: Object
 
     // `request`
     // MRequest instance which produce this response
-    request: MRequest
+    public request: MRequest
 
-    constructor(completedXhr, requestInstance) {
+    constructor(completedXhr: XMLHttpRequest, requestInstance: MRequest) {
         this.status = completedXhr.status
         this.statusText = completedXhr.statusText
         this.headers = requestInstance.headers

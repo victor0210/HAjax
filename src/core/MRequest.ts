@@ -10,32 +10,40 @@ export default class MRequest {
     // "Universally Unique Identifier" for marking per request:
     private _uuid: Number = ~~(Math.random() * 10e8)
 
+    // `_onFulfilled`
+    // callback with request success
+    private _onFulfilled: Function
+
+    // `_onFailed`
+    // callback with request failed
+    private _onFailed: Function
+
     // `url`
     // Server URL that will be used for the request
-    url: String
+    public url: String
 
     // `method`
     // request method to be used when making the request
-    method: String
+    public method: String
 
     // `baseURL`
     // will be prepended to `url` unless `url` is absolute such as http://* or https://*.
     // It can be convenient to set `baseURL` for an instance of majax to pass relative URLs
     // to methods of that instance.
-    baseURL: String
+    public baseURL: String
 
     // `fullUrl`
     //  The actual requested url combined by baseUrl and url before send out
-    fullUrl: String
+    public fullUrl: String
 
     // `headers`
     // custom headers to be sent
-    headers: Object
+    public headers: Object
 
     // `params`
     // URL parameters to be sent with the request
     // Must be a plain object or a URLSearchParams object
-    params: Object
+    public params: Object
 
     // `data`
     // data to be sent as the request body
@@ -44,60 +52,52 @@ export default class MRequest {
     // - string, plain object, ArrayBuffer, ArrayBufferView, URLSearchParams
     // - Browser only: FormData, File, Blob
     // - Node only: Stream, Buffer
-    data: Object
+    public data: Object
 
     // `timeout`
     // specifies the number of milliseconds before the request times out.
     // If the request takes longer than `timeout`, the request will be aborted.
-    timeout: Number
+    public timeout: Number
 
     // `withCredentials`
     // indicates whether or not cross-site Access-Control requests
     // should be made using credentials
-    withCredentials: Boolean
+    public withCredentials: Boolean
 
     // `responseType`
     // indicates the type of data that the server will respond with
     // options are 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
-    responseType: String // default
+    public responseType: String // default
 
     // `_xhr`
     // XMLHttpRequest for sending real ajax request
-    xhr: XMLHttpRequest
+    public xhr: XMLHttpRequest
 
     // `config`
     // is what pass through the whole request flow
-    config: Object
+    public config: Object
 
     // `withRushStore`
     // will restore cache data if necessary
-    withRushStore: Boolean
+    public withRushStore: Boolean
 
     // `majaxInstance`
     // driver of this request, inject by visit
-    majaxInstance: Majax
+    public majaxInstance: Majax
 
     // `aborted`
     // abort flag for concurrent requests buffer area
-    aborted: Boolean
+    public aborted: Boolean
 
     // `mode`
     // more confidence to make request 'debounce' or 'throttle'
-    mode: String
+    public mode: String
 
     // `debounceTime`
-    debounceTime: Number
+    public debounceTime: Number
 
     // `throttleTime`
-    throttleTime: Number
-
-    // `_onFulfilled`
-    // callback with request success
-    _onFulfilled: Function
-
-    // `_onFailed`
-    // callback with request failed
-    _onFailed: Function
+    public throttleTime: Number
 
     constructor(config) {
         this.url = config.url
@@ -120,7 +120,7 @@ export default class MRequest {
      * @desc emit success handler running
      * @param responseInstance
      * */
-    public success(responseInstance) {
+    public success(responseInstance: MRequest) {
         this._onFulfilled(responseInstance)
     }
 
@@ -128,23 +128,38 @@ export default class MRequest {
      * @desc emit failed handler running
      * @param responseInstance
      * */
-    public failed(responseInstance) {
+    public failed(responseInstance: MRequest) {
         this._onFailed(responseInstance)
     }
 
-    public then(onFulfilled) {
+    /**
+     * @desc collect fulfilled handler
+     * @param onFulfilled
+     * */
+    public then(onFulfilled: Function) {
         // will support multiple fulfilled handlers
         this._onFulfilled = onFulfilled
         return this
     }
 
-    public catch(onFailed) {
+    /**
+     * @desc collect failed handler
+     * @param onFailed
+     * */
+    public catch(onFailed: Function) {
         this._onFailed = onFailed
         return this
     }
 
+    /**
+     * @desc abort the request to be sent and being sent
+     *
+     * what kind of request would be aborted is not in concurrentBuffer
+     * and isn`t an cache request-leader, which is the request will emit
+     * callbacks in concurrentBuffer after response
+     * */
     public abort() {
-        // for request in concurrentBuffer
+
         this.aborted = true
 
         if (this.xhr) {

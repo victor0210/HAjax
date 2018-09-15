@@ -34,8 +34,12 @@ class Majax {
     // }
     public store: Object
 
+    // `throttleStore`
+    // cache center for throttle requests
     public throttleStore: Object
 
+    // `debounceStore`
+    // cache center for debounce requests
     public debounceStore: Object
 
     // `requestQueue`
@@ -64,7 +68,7 @@ class Majax {
     // store strategy is very special because it has Multiple-Request optimization such as 'debounce' and 'throttle'
     // you don't worry the blow requests sending to server without the first request complete
     // they will be pushed to cache listener and waiting for the first request complete
-    public storeStrategy: null
+    public storeStrategy: Object
 
     // `config`
     // global config bind on a majax instance, which will inject into every request instance
@@ -223,7 +227,7 @@ class Majax {
      * @param rule
      * @param requestInstance
      * */
-    public storeWithRule(rule, requestInstance) {
+    public storeWithRule(rule, requestInstance: MRequest) {
         let cache = this.store[requestInstance.fullUrl]
 
         const runRespWithStore = () => {
@@ -257,7 +261,7 @@ class Majax {
         }
     }
 
-    public rushRequest(rule, requestInstance) {
+    public rushRequest(rule, requestInstance: MRequest) {
         requestInstance.sendAjax()
 
         this.rushStore(
@@ -361,7 +365,7 @@ class Majax {
         return request
     }
 
-    public get(url, opts = {}) {
+    public get(url: String, opts = {}) {
         return this.request({
             ...opts,
             url,
@@ -369,7 +373,7 @@ class Majax {
         })
     }
 
-    public post(url, opts = {}) {
+    public post(url: String, opts = {}) {
         return this.request({
             ...opts,
             url,
@@ -377,11 +381,19 @@ class Majax {
         })
     }
 
-    public all(promises) {
+    /**
+     * @desc facade for promise.all
+     * @param promises: Array<Promise>
+     * */
+    public all(promises: Array<Promise>) {
         return Promise.all(promises)
     }
 
-    public race(promises) {
+    /**
+     * @desc facade for promise.race
+     * @param promises: Array<Promise>
+     * */
+    public race(promises: Array<Promise>) {
         return Promise.race(promises)
     }
 

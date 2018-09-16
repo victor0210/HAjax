@@ -69,8 +69,10 @@ export default class MRequest {
     // options are 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
     public responseType: String // default
 
-    // `_xhr`
+    // `xhr`
     // XMLHttpRequest for sending real ajax request
+    // is here should be named `driver` contains [fetch, XMLHttpRequest, ActiveXObject] and
+    // provide a facade for those drivers is recommended to be considered
     public xhr: XMLHttpRequest
 
     // `config`
@@ -120,7 +122,7 @@ export default class MRequest {
      * @desc emit success handler running
      * @param responseInstance
      * */
-    public success(responseInstance: MRequest) {
+    public success(responseInstance: MResponse) {
         this._onFulfilled(responseInstance)
     }
 
@@ -128,7 +130,7 @@ export default class MRequest {
      * @desc emit failed handler running
      * @param responseInstance
      * */
-    public failed(responseInstance: MRequest) {
+    public failed(responseInstance: MResponse) {
         this._onFailed(responseInstance)
     }
 
@@ -177,7 +179,7 @@ export default class MRequest {
      * @desc got uuid of request instance
      * @return _uuid
      * */
-    public getUUID() {
+    public getUUID(): Number {
         return this._uuid
     }
 
@@ -211,6 +213,8 @@ export default class MRequest {
             if (rule) {
                 this.withRushStore = this.majaxInstance.checkStoreExpired(urlKey)
                 this.majaxInstance.storeWithRule(rule, this)
+            } else {
+                this.sendAjax()
             }
         } else {
             this.sendAjax()

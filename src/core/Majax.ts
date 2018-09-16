@@ -4,11 +4,12 @@ import {GET_FLAG, POST_FLAG} from "../config/requestMethods";
 import MRequest from "./MRequest";
 import Queue from "../impelments/Queue";
 import MResponse from "./MResponse";
-import {RESP_SUCCESS_CODE_PREFIX} from "../config/regexp";
+import {CACHE_FOREVER, RESP_SUCCESS_CODE_PREFIX} from "../config/regexp";
 import {containedInArr, matchType} from "../utils/matcher";
 import {throwIf, warnIf} from "../utils/conditionCheck";
 import {DEBOUNCE, THROTTLE} from "../config/storeMode";
 import {TYPE_OBJECT} from "../config/baseType";
+import Strategy from "./Strategy";
 
 class Majax {
     // `_requestDealTarget`
@@ -68,7 +69,7 @@ class Majax {
     // store strategy is very special because it has Multiple-Request optimization such as 'debounce' and 'throttle'
     // you don't worry the blow requests sending to server without the first request complete
     // they will be pushed to cache listener and waiting for the first request complete
-    public storeStrategy: Object
+    public storeStrategy: Array<Strategy> | Strategy
 
     // `config`
     // global config bind on a majax instance, which will inject into every request instance
@@ -82,6 +83,7 @@ class Majax {
         this.requestPool = {}
         this.debounceStore = {}
         this.throttleStore = {}
+        this.storeStrategy = null
         this._requestDealTarget = null
     }
 
@@ -253,7 +255,7 @@ class Majax {
         cache.concurrentBuffer.push(requestInstance)
 
         if (cache.hasCache) {
-            if (cache.bufferTime) {
+            if (cache.bufferTime && cache.bufferTime !== CACHE_FOREVER) {
                 if (new Date().getTime() <= cache.expires) runRespWithStore()
             } else {
                 runRespWithStore()
@@ -269,20 +271,21 @@ class Majax {
             requestInstance.xhr,
             rule.bufferTime
         )
-
-        return
     }
 
     /**
      * @desc check store if match rush strategy
      * @param url
      * */
-    public checkStoreExpired(url: String) {
+    public checkStoreExpired(url: String): Boolean {
         if (!this.store[url]) return true
         if (!this.store[url].bufferTime) return true
 
         if (this.store[url].bufferTime) {
-            return (new Date().getTime() > this.store[url].expires)
+            return (
+                new Date().getTime() > this.store[url].expires &&
+                this.store[url].bufferTime !== CACHE_FOREVER
+            )
         }
     }
 
@@ -333,7 +336,7 @@ class Majax {
      * @desc global request api
      * @param opts
      * */
-    public request(opts: Object) {
+    public request(opts: Object): MRequest {
         // check if match debounce or throttle strategies
         throwIf(
             !matchType(opts, TYPE_OBJECT),
@@ -365,7 +368,7 @@ class Majax {
         return request
     }
 
-    public get(url: String, opts = {}) {
+    public get(url: String, opts = {}): MRequest {
         return this.request({
             ...opts,
             url,
@@ -373,7 +376,7 @@ class Majax {
         })
     }
 
-    public post(url: String, opts = {}) {
+    public post(url: String, opts = {}): MRequest {
         return this.request({
             ...opts,
             url,
@@ -385,7 +388,7 @@ class Majax {
      * @desc facade for promise.all
      * @param promises: Array<Promise>
      * */
-    public all(promises: Array<Promise>) {
+    public all(promises: Array<Promise>): Promise {
         return Promise.all(promises)
     }
 
@@ -393,16 +396,23 @@ class Majax {
      * @desc facade for promise.race
      * @param promises: Array<Promise>
      * */
-    public race(promises: Array<Promise>) {
+    public race(promises: Array<Promise>): Promise {
         return Promise.race(promises)
     }
 
     /**
+     * @desc validate strategy param if valid
+     * @param urlExp
+     * @param bufferTime: the cache would be force used if bufferTime is -1 (default)
+     * */
+    public createStrategy(urlExp: String | RegExp, bufferTime: Number = CACHE_FOREVER): Strategy {
+        return new Strategy(urlExp, bufferTime)
+    }
+    /**
      * @desc set new store strategy for driver, which could cover the old strategy
      * @param strategy
      * */
-    public setStrategy(strategy) {
-        // TODO: validation of param
+    public setStrategy(strategy: Array<Strategy> | Strategy) {
         this.storeStrategy = strategy
     }
 

@@ -1,13 +1,15 @@
 import {matchInstance, matchType} from "./matcher";
 import {TYPE_ARRAY, TYPE_OBJECT} from "../config/baseType";
 import {warnIf} from "./conditionCheck";
+import {ALL} from "../config/regexp";
+import Strategy from "../core/Strategy";
 
 /**
  * @desc check url if has matched strategy rule, only the first rule is valid
  * @param rules
  * @param url
  * */
-const findMatchStrategy = (rules, url) => {
+const findMatchStrategy = (rules: Array<Strategy> | Strategy, url: String) => {
     let matchedRule = null
 
     if (Array.isArray(rules)) {
@@ -41,13 +43,13 @@ const findMatchStrategy = (rules, url) => {
     if (matchedRule) return matchedRule
 }
 
-const matchRule = (rule, url) => {
+const matchRule = (rule: Strategy, url: String) => {
     return (
-        rule.url === url ||                                 // rule.url match url
-        rule.url === '*' ||                                 // rule.url is "*" (all contains)
-        (                                                   // rule.url is instance of RegExp, test url with it
-            matchInstance(rule.url, RegExp) &&
-            rule.url.test(url)
+        rule.urlExp === url ||                                 // rule.urlExp match url
+        rule.urlExp === ALL ||                                 // rule.urlExp is "*" (all contains)
+        (                                                      // rule.urlExp is instance of RegExp, test url with it
+            matchInstance(rule.urlExp, RegExp) &&
+            rule.urlExp.test(url)
         )
     )
 }

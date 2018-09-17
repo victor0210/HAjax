@@ -10,13 +10,16 @@ export default {
     },
 
     // request server url
-    url: '',
+    url: '/',
 
     // mode: default: null, 'debounce', 'throttle'
     mode: null,
 
     // count of auto retry bad request
     retryLimit: 0,
+
+    // buffer of retry with bad request
+    retryBuffer: 3000,
 
     // action when mode is 'debounce'
     debounceTime: 300,

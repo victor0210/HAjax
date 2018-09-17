@@ -96,6 +96,10 @@ export default class MRequest {
     // resend another request if has a bad response
     public retryLimit: Number
 
+    // `retryBuffer`
+    // interval of retry request
+    public retryBuffer: Number
+
     // `mode`
     // more confidence to make request 'debounce' or 'throttle'
     public mode: String
@@ -114,6 +118,7 @@ export default class MRequest {
         this.params = config.params
         this.mode = config.mode
         this.retryLimit = config.retryLimit
+        this.retryBuffer = config.retryBuffer
         this.debounceTime = config.debounceTime
         this.throttleTime = config.throttleTime
         this.data = config.data
@@ -266,13 +271,15 @@ export default class MRequest {
                     !RESP_SUCCESS_CODE_PREFIX.test(xhr.status.toString()) &&
                     this.retryLimit > 0
                 ) {
-                    this.sendAjax()
-                    this.retryLimit--
+                    setTimeout(() => {
+                        this.sendAjax()
+                        this.retryLimit--
 
-                    // if xhr has already in 'majax' store, just cover it with new xhr
-                    if (this.majaxInstance.store[this.fullUrl] &&
-                        this.majaxInstance.store[this.fullUrl].xhr === xhr
-                    ) this.majaxInstance.store[this.fullUrl].xhr = this.xhr
+                        // if xhr has already in 'majax' store, just cover it with new xhr
+                        if (this.majaxInstance.store[this.fullUrl] &&
+                            this.majaxInstance.store[this.fullUrl].xhr === xhr
+                        ) this.majaxInstance.store[this.fullUrl].xhr = this.xhr
+                    }, this.retryBuffer)
                 } else {
                     this.majaxInstance._runResp(
                         new MResponse(

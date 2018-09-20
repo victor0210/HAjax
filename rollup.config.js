@@ -12,9 +12,7 @@ export default {
   },
   plugins: [
     babel(),
-    typescript(
-      { lib: ['es5', 'es6'], target: 'es5' }
-    ),
+    typescript(),
     alias({
       resolve: ['.ts', '.js'],
       aliasConfig

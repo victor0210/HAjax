@@ -9,7 +9,7 @@ import {RESP_SUCCESS_CODE_PREFIX} from "../config/regexp";
 export default class MRequest {
     // `_uuid`
     // "Universally Unique Identifier" for marking per request:
-    private _uuid: Number = ~~(Math.random() * 10e8)
+    private _uuid: number = ~~(Math.random() * 10e8)
 
     // `_onFulfilled`
     // callback with request success
@@ -21,30 +21,30 @@ export default class MRequest {
 
     // `url`
     // Server URL that will be used for the request
-    public url: String
+    public url: string
 
     // `method`
     // request method to be used when making the request
-    public method: String
+    public method: string
 
     // `baseURL`
     // will be prepended to `url` unless `url` is absolute such as http://* or https://*.
     // It can be convenient to set `baseURL` for an instance of majax to pass relative URLs
     // to methods of that instance.
-    public baseURL: String
+    public baseURL: string
 
     // `fullUrl`
     //  The actual requested url combined by baseUrl and url before send out
-    public fullUrl: String
+    public fullUrl: string
 
     // `headers`
     // custom headers to be sent
-    public headers: Object
+    public headers: object
 
     // `params`
     // URL parameters to be sent with the request
     // Must be a plain object or a URLSearchParams object
-    public params: Object
+    public params: object
 
     // `data`
     // data to be sent as the request body
@@ -53,22 +53,22 @@ export default class MRequest {
     // - string, plain object, ArrayBuffer, ArrayBufferView, URLSearchParams
     // - Browser only: FormData, File, Blob
     // - Node only: Stream, Buffer
-    public data: Object
+    public data: object
 
     // `timeout`
     // specifies the number of milliseconds before the request times out.
     // If the request takes longer than `timeout`, the request will be aborted.
-    public timeout: Number
+    public timeout: number
 
     // `withCredentials`
     // indicates whether or not cross-site Access-Control requests
     // should be made using credentials
-    public withCredentials: Boolean
+    public withCredentials: boolean
 
     // `responseType`
     // indicates the type of data that the server will respond with
     // options are 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
-    public responseType: String // default
+    public responseType: string // default
 
     // `xhr`
     // XMLHttpRequest for sending real ajax request
@@ -78,11 +78,11 @@ export default class MRequest {
 
     // `config`
     // is what pass through the whole request flow
-    public config: Object
+    public config: Config
 
     // `withRushStore`
     // will restore cache data if necessary
-    public withRushStore: Boolean
+    public withRushStore: boolean
 
     // `majaxInstance`
     // driver of this request, inject by visit
@@ -90,25 +90,25 @@ export default class MRequest {
 
     // `aborted`
     // abort flag for concurrent requests buffer area
-    public aborted: Boolean
+    public aborted: boolean
 
     // `retryLimit`
     // resend another request if has a bad response
-    public retryLimit: Number
+    public retryLimit: number
 
     // `retryBuffer`
     // interval of retry request
-    public retryBuffer: Number
+    public retryBuffer: number
 
     // `mode`
     // more confidence to make request 'debounce' or 'throttle'
-    public mode: String
+    public mode: string
 
     // `debounceTime`
-    public debounceTime: Number
+    public debounceTime: number
 
     // `throttleTime`
-    public throttleTime: Number
+    public throttleTime: number
 
     constructor(config) {
         this.url = config.url
@@ -190,7 +190,7 @@ export default class MRequest {
      * @desc got uuid of request instance
      * @return _uuid
      * */
-    public getUUID(): Number {
+    public getUUID(): number {
         return this._uuid
     }
 

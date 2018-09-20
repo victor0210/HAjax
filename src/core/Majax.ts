@@ -25,7 +25,7 @@ class Majax {
     // The data model is as follows:
     // {
     //   test.demo.com: {                                   // key is must be the cache full url (with params)
-    //     hasCache: Boolean,                               // if has cache data here
+    //     hasCache: boolean,                               // if has cache data here
     //     xhr: XMLHttpRequest,                             // Cached Data, which is a XMLHttpRequest instance
     //     concurrentBuffer: [RequestInstance, ...],        // Buffer Area for concurrent requests
     //     bufferTime: 3000(ms),                            // Buffer duration
@@ -33,15 +33,15 @@ class Majax {
     //   }
     //   ...
     // }
-    public store: Object
+    public store: object
 
     // `throttleStore`
     // cache center for throttle requests
-    public throttleStore: Object
+    public throttleStore: object
 
     // `debounceStore`
     // cache center for debounce requests
-    public debounceStore: Object
+    public debounceStore: object
 
     // `requestQueue`
     // for request instance ordered processing
@@ -62,7 +62,7 @@ class Majax {
 
     // `requestPool`: Reserved field
     // contain all 'SENDING_STATE' request instance
-    public requestPool: Object
+    public requestPool: object
 
     // `storeStrategy`
     // majax cache strategy, valid key can be "url", "bufferTime"
@@ -73,7 +73,7 @@ class Majax {
 
     // `config`
     // global config bind on a majax instance, which will inject into every request instance
-    public config: Object
+    public config: object
 
     constructor(opts = {}) {
         this.config = mergeConfig(defaults, opts)
@@ -277,7 +277,7 @@ class Majax {
      * @desc check store if match rush strategy
      * @param url
      * */
-    public checkStoreExpired(url: String): Boolean {
+    public checkStoreExpired(url: string): boolean {
         if (!this.store[url]) return true
         if (!this.store[url].bufferTime) return true
 
@@ -295,7 +295,7 @@ class Majax {
      * @param xhr
      * @param bufferTime
      * */
-    public rushStore(key: String, xhr: XMLHttpRequest, bufferTime: Number) {
+    public rushStore(key: string, xhr: XMLHttpRequest, bufferTime: number) {
         if (!this.store[key]) {
             this.store[key] = {
                 hasCache: false,
@@ -336,7 +336,7 @@ class Majax {
      * @desc global request api
      * @param opts
      * */
-    public request(opts: Object): MRequest {
+    public request(opts: object): MRequest {
         // check if match debounce or throttle strategies
         throwIf(
             !matchType(opts, TYPE_OBJECT),
@@ -368,7 +368,7 @@ class Majax {
         return request
     }
 
-    public get(url: String, opts = {}): MRequest {
+    public get(url: string, opts = {}): MRequest {
         return this.request({
             ...opts,
             url,
@@ -376,7 +376,7 @@ class Majax {
         })
     }
 
-    public post(url: String, opts = {}): MRequest {
+    public post(url: string, opts = {}): MRequest {
         return this.request({
             ...opts,
             url,
@@ -388,7 +388,7 @@ class Majax {
      * @desc facade for promise.all
      * @param promises: Array<Promise>
      * */
-    public all(promises: Array<Promise>): Promise {
+    public all(promises: Array<any>) {
         return Promise.all(promises)
     }
 
@@ -396,7 +396,7 @@ class Majax {
      * @desc facade for promise.race
      * @param promises: Array<Promise>
      * */
-    public race(promises: Array<Promise>): Promise {
+    public race(promises: Array<any>) {
         return Promise.race(promises)
     }
 
@@ -405,7 +405,7 @@ class Majax {
      * @param urlExp
      * @param bufferTime: the cache would be force used if bufferTime is -1 (default)
      * */
-    public createStrategy(urlExp: String | RegExp, bufferTime: Number = CACHE_FOREVER): Strategy {
+    public createStrategy(urlExp: any, bufferTime: number = CACHE_FOREVER): Strategy {
         return new Strategy(urlExp, bufferTime)
     }
     /**
@@ -430,4 +430,4 @@ class Majax {
     // }
 }
 
-export default new Majax()
+export default Majax

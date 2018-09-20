@@ -1,5 +1,5 @@
 import {matchInstance, matchType} from "./matcher";
-import {TYPE_ARRAY, TYPE_OBJECT} from "../config/baseType";
+import {TYPE_ARRAY, TYPE_OBJECT, TYPE_STRING} from "../config/baseType";
 import {warnIf} from "./conditionCheck";
 import {ALL} from "../config/regexp";
 import Strategy from "../core/Strategy";
@@ -9,7 +9,7 @@ import Strategy from "../core/Strategy";
  * @param rules
  * @param url
  * */
-const findMatchStrategy = (rules: Array<Strategy> | Strategy, url: String) => {
+const findMatchStrategy = (rules: Array<Strategy> | Strategy, url: any) => {
     let matchedRule = null
 
     if (Array.isArray(rules)) {
@@ -43,7 +43,7 @@ const findMatchStrategy = (rules: Array<Strategy> | Strategy, url: String) => {
     if (matchedRule) return matchedRule
 }
 
-const matchRule = (rule: Strategy, url: String) => {
+const matchRule = (rule: Strategy, url: any) => {
     return (
         rule.urlExp === url ||                                 // rule.urlExp match url
         rule.urlExp === ALL ||                                 // rule.urlExp is "*" (all contains)

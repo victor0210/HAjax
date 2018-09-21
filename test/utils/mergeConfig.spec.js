@@ -2,7 +2,7 @@
 import mergeConfig from '../../src/utils/mergeConfig'
 import defaults from '../../src/config/initConfig.ts'
 
-describe('core::mergeConfig', () => {
+describe('utils::mergeConfig', () => {
   it('should accept undefined for second argument', () => {
     expect(mergeConfig(defaults, undefined)).toEqual(defaults)
   })

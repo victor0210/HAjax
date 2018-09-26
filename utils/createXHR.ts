@@ -1,13 +1,15 @@
-const createXHR = (config) => {
+import urlFormat from "./urlFormat";
+
+const createXHR = (requestInstance) => {
     const xhr = new XMLHttpRequest();
 
-    configInject(xhr, config)
+    configInject(xhr, requestInstance)
 
     return xhr
 }
 
-const configInject = (xhr, config) => {
-    xhrUtils.common(xhr, config)
+const configInject = (xhr, requestInstance) => {
+    xhrUtils.common(xhr, requestInstance)
 }
 
 const xhrUtils = {
@@ -15,18 +17,18 @@ const xhrUtils = {
         //config common
         xhr.open(
             config.method.toUpperCase(),
-            config.url,
-            true
-        );
+            urlFormat(config.baseUrl, config.url, config.params)
+        )
 
-        //config special
-        xhrUtils[config.method](xhr, config)
-    },
-    get: (xhr, config) => {
+        //headers
+        for (let header in config.headers) {
+            xhr.setRequestHeader(header, config.headers[header]);
+        }
 
-    },
-
-    post: (xhr, config) => {
-
+        xhr.responseType = config.responseType
+        //withCredentials
+        xhr.withCredentials = config.withCredentials
     }
 }
+
+export default createXHR

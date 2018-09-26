@@ -39,6 +39,7 @@
     "typescript": "^3.0.3"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0"
+    "@babel/runtime": "^7.0.0",
+    "moment": "^2.22.2"
   }
 }

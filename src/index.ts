@@ -1,7 +1,6 @@
-import MAJAX from './core/majax'
+import mx from './core/Majax'
 
-const majax = new MAJAX().create()
-
-console.log(majax)
-majax.get('https://www.baidu.com')
-
+// if bundle with mountWindow
+(function (global) {
+    global['mx'] = mx
+})(window)

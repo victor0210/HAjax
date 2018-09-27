@@ -25,9 +25,7 @@ class Majax {
 
     public config: Object
 
-    constructor (
-        opts = {}
-    ) {
+    constructor(opts = {}) {
         this.config = mergeConfig(defaults, opts)
         this._store = {}
         this._requestQueue = new Queue()
@@ -54,11 +52,11 @@ class Majax {
         this._responseQueue.enqueue(responseInstance)
         this._emitResponseFlow()
 
-        if (responseInstance.request.iniCacheWay) {
+        if (responseInstance.request.withRushStore) {
             this._store[responseInstance.request.url].hasCache = true
             while (this._store[responseInstance.request.url].listeners.length > 0) {
                 let req = this._store[responseInstance.request.url].listeners.shift()
-                this._runResp (
+                this._runResp(
                     new MResponse(
                         this._store[responseInstance.request.url].xhr,
                         req
@@ -97,25 +95,56 @@ class Majax {
         this._emitRequestFlow()
     }
 
-    public storeWithRule (rule, requestInstance) {
+    public storeWithRule(rule, requestInstance) {
+        const runRespWithStore = () => {
+            this._runResp(
+                new MResponse(
+                    this._store[requestInstance.url].xhr,
+                    requestInstance
+                )
+            )
+        }
+
         if (!this._store[requestInstance.url]) {
             this._store[requestInstance.url] = {
                 hasCache: false,
                 xhr: requestInstance.initXHR(),
-                listeners: []
+                listeners: [],
+                debounce: rule.debounce,
+                expires: new Date().getTime() + rule.debounce
             }
-            requestInstance.xhr.send(JSON.stringify(requestInstance.data))
-        } else {
-            this._store[requestInstance.url].listeners.push(requestInstance)
 
-            if (this._store[requestInstance.url].hasCache) {
-                this._runResp (
-                    new MResponse(
-                        this._store[requestInstance.url].xhr,
-                        requestInstance
-                    )
-                )
+            requestInstance.xhr.send(JSON.stringify(requestInstance.data))
+
+            return
+        }
+
+        if (requestInstance.withRushStore) {
+            requestInstance.sendAjax()
+        }
+
+        this._store[requestInstance.url].listeners.push(requestInstance)
+
+        // auto fetch data from store
+        if (this._store[requestInstance.url].hasCache) {
+            if (
+                this._store[requestInstance.url].debounce &&
+                new Date().getTime() <= this._store[requestInstance.url].expires
+            ) {
+                // check cache expire
+                runRespWithStore()
+            } else {
+                runRespWithStore()
             }
+        }
+    }
+
+    public checkStoreExpired(url) {
+        if (!this._store[url]) return true
+        if (!this._store[url].debounce) return true
+
+        if (this._store[url].debounce) {
+            return (new Date().getTime() > this._store[url].expires)
         }
     }
 

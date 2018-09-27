@@ -20,12 +20,5 @@ export default {
     responseType: RESPONSE_TYPE_JSON,
 
     // storeStrategy, accept Strategy instance
-    storeStrategy: [
-        {
-            url: '*',
-            maxAge: null,
-            expires: null,
-            debounce: null
-        }
-    ]
+    storeStrategy: null
 }

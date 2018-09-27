@@ -15,16 +15,6 @@
 		console.log('failed', resp)
 	})
 
-	setTimeout(() => {
-		//get
-        console.log('start set', mx)
-		mx.get('http://majax.test/index.php').then(resp => {
-			console.log('success', resp)
-		}).catch(resp => {
-			console.log('failed', resp)
-		})
-	}, 3000)
-
 	//get with params
 	mx.get('http://majax.test/index.php', {
 		params: {

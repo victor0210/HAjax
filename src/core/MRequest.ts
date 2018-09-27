@@ -51,8 +51,8 @@ export default class MRequest {
     // `config` is what pass through the whole request flow
     config: any
 
-
-    iniCacheWay: Boolean
+    // `withRushStore` will restore cache data if necessary
+    withRushStore: Boolean
 
     // `_majaxInstance` driver of this request, inject by visit
     _majaxInstance: Majax
@@ -78,7 +78,7 @@ export default class MRequest {
         this.withCredentials= config.withCredentials
         this.responseType = config.responseType
         this.config = config
-        this.iniCacheWay = false
+        this.withRushStore = false
         this._onFulfilled = onFulfilled
         this._onFailed = onFailed
     }
@@ -131,12 +131,17 @@ export default class MRequest {
             let rule = findMatchStrategy(this.config.storeStrategy, this.url)
 
             if (rule) {
-                this.iniCacheWay = true
+                this.withRushStore = this._majaxInstance.checkStoreExpired(this.url)
+                console.log(this.withRushStore, 'withRushStore', new Date().getTime())
                 this._majaxInstance.storeWithRule(rule, this)
             }
         } else {
-            this.initXHR()
-            this.xhr.send(JSON.stringify(this.data))
+            this.sendAjax()
         }
+    }
+
+    public sendAjax() {
+        this.initXHR()
+        this.xhr.send(JSON.stringify(this.data))
     }
 }

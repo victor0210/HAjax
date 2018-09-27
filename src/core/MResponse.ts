@@ -27,10 +27,7 @@ export default class MResponse {
     // is Request instance
     request: MRequest
 
-    constructor (
-        completedXhr,
-        requestInstance
-    ) {
+    constructor(completedXhr, requestInstance) {
         this.status = completedXhr.status
         this.statusText = completedXhr.statusText
         this.headers = requestInstance.headers

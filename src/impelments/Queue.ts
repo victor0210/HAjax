@@ -13,7 +13,7 @@ export default class Queue {
         return this._queue.shift()
     }
 
-    public hasNext() {
+    public hasItem() {
         return this._queue.length > 0
     }
 }

@@ -3,11 +3,7 @@ import {
     URL_PREFIX
 } from "../src/config/regexp";
 
-const urlFormat = (
-    baseUrl: String,
-    url: String,
-    params?: object
-): String => {
+const urlFormat = (baseUrl: String, url: String, params?: Object): String => {
     url.replace(MULTIPLE_SLASH, SINGE_SLASH)
 
     if (params) {
@@ -23,7 +19,7 @@ const urlFormat = (
     }
 
     if (URL_PREFIX.test(url)) return url
-    if (baseUrl) url = `${baseUrl}/${url}`
+    if (baseUrl) url = `${baseUrl}${SINGE_SLASH}${url}`
 
     return encodeURI(url)
 }

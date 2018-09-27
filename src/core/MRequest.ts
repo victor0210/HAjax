@@ -4,6 +4,7 @@ import {STATE_DONE} from "../config/readyState";
 import Majax from "./Majax";
 import findMatchStrategy from "../../utils/findMatchStrategy";
 import {GET_FLAG} from "../config/requestMethods";
+import urlFormat from "../../utils/urlFormat";
 
 export default class MRequest {
     // `_uuid`
@@ -69,9 +70,9 @@ export default class MRequest {
     // will restore cache data if necessary
     withRushStore: Boolean
 
-    // `_majaxInstance`
+    // `majaxInstance`
     // driver of this request, inject by visit
-    _majaxInstance: Majax
+    majaxInstance: Majax
 
     // `_onFulfilled`
     // callback with request success
@@ -81,47 +82,20 @@ export default class MRequest {
     // callback with request failed
     _onFailed: Function
 
-    constructor (
-        config,
-        onFulfilled,
-        onFailed
-    ) {
+    constructor(config, onFulfilled, onFailed) {
         this.url = config.url
         this.method = config.method
-        this.baseURL= config.baseURL
-        this.headers= config.headers
-        this.params= config.params
-        this.data= config.data
-        this.timeout= config.timeout
-        this.withCredentials= config.withCredentials
+        this.baseURL = config.baseURL
+        this.headers = config.headers
+        this.params = config.params
+        this.data = config.data
+        this.timeout = config.timeout
+        this.withCredentials = config.withCredentials
         this.responseType = config.responseType
         this.config = config
         this.withRushStore = false
         this._onFulfilled = onFulfilled
         this._onFailed = onFailed
-    }
-
-    /**
-     * @desc XMLHttpRequest initial
-     * */
-    private initXHR() {
-        // xhr in browser
-        const xhr = createXHR(this)
-
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState == STATE_DONE){
-                this._majaxInstance._runResp(
-                    new MResponse(
-                        xhr,
-                        this
-                    )
-                )
-            }
-        }
-
-        this.xhr = xhr
-
-        return xhr
     }
 
     /**
@@ -144,7 +118,7 @@ export default class MRequest {
      * @desc got uuid of request instance
      * @return _uuid
      * */
-    public getUUID () {
+    public getUUID() {
         return this._uuid
     }
 
@@ -152,8 +126,8 @@ export default class MRequest {
      * @desc accept majax instance for visiting
      * @param majaxInstance
      * */
-    public accept (majaxInstance: Majax) {
-        this._majaxInstance = majaxInstance
+    public accept(majaxInstance: Majax) {
+        this.majaxInstance = majaxInstance
     }
 
     /**
@@ -168,12 +142,54 @@ export default class MRequest {
             let rule = findMatchStrategy(this.config.storeStrategy, this.url)
 
             if (rule) {
-                this.withRushStore = this._majaxInstance.checkStoreExpired(this.url)
-                this._majaxInstance.storeWithRule(rule, this)
+                this.withRushStore = this.majaxInstance.checkStoreExpired(this.url)
+                this.majaxInstance.storeWithRule(rule, this)
             }
         } else {
             this.sendAjax()
         }
+    }
+
+    /**
+     * @desc XMLHttpRequest initial: use fetch?
+     * */
+    public initXHR() {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open(
+            this.config.method.toUpperCase(),
+            urlFormat(this.config.baseUrl, this.config.url, this.config.params)
+        )
+
+        //headers
+        for (let header in this.config.headers) {
+            xhr.setRequestHeader(header, this.config.headers[header]);
+        }
+
+        //timeout
+        xhr.timeout = this.config.timeout
+
+        //responseType
+        xhr.responseType = this.config.responseType
+
+        //withCredentials
+        xhr.withCredentials = this.config.withCredentials
+
+        //handle request complete async
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState == STATE_DONE) {
+                this.majaxInstance._runResp(
+                    new MResponse(
+                        xhr,
+                        this
+                    )
+                )
+            }
+        }
+
+        this.xhr = xhr
+
+        return xhr
     }
 
     /**

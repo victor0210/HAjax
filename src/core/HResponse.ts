@@ -1,7 +1,7 @@
-import MRequest from "./MRequest";
+import HRequest from "./HRequest";
 import transferResponseData from "../utils/transferResponseData";
 
-export default class MResponse {
+export default class HResponse {
     // `data`
     // is an object transformed by response schema data
     public data: any
@@ -24,10 +24,10 @@ export default class MResponse {
     public config: object
 
     // `request`
-    // MRequest instance which produce this response
-    public request: MRequest
+    // HRequest instance which produce this response
+    public request: HRequest
 
-    constructor(completedXhr: XMLHttpRequest, requestInstance: MRequest) {
+    constructor(completedXhr: XMLHttpRequest, requestInstance: HRequest) {
         this.status = completedXhr.status
         this.statusText = completedXhr.statusText
         this.headers = requestInstance.headers

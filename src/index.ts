@@ -1,6 +1,6 @@
-import mx from './core/Majax'
+import hx from './core/HAjax'
 
 // if bundle with mountWindow
 (function (global) {
-    global['mx'] = new mx()
+    global['hx'] = new hx()
 })(window)

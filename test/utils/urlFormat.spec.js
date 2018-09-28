@@ -40,31 +40,31 @@ describe('utils::urlFormat', () => {
 
   it('should parse params 1', () => {
     expect(
-      urlFormat('http://www.base.com/', 'path', { name: 'mx' })
-    ).toEqual('http://www.base.com/path?name=mx')
+      urlFormat('http://www.base.com/', 'path', { name: 'hx' })
+    ).toEqual('http://www.base.com/path?name=hx')
   })
 
   it('should parse params 2', () => {
     expect(
-      urlFormat('http://www.base.com/', 'path', { name: 'mx', age: 20 })
-    ).toEqual('http://www.base.com/path?name=mx&age=20')
+      urlFormat('http://www.base.com/', 'path', { name: 'hx', age: 20 })
+    ).toEqual('http://www.base.com/path?name=hx&age=20')
   })
 
   it('should parse params 3', () => {
     expect(
-      urlFormat('http://www.base.com/', '/path/po', { name: 'mx', age: 20 })
-    ).toEqual('http://www.base.com/path/po?name=mx&age=20')
+      urlFormat('http://www.base.com/', '/path/po', { name: 'hx', age: 20 })
+    ).toEqual('http://www.base.com/path/po?name=hx&age=20')
   })
 
   it('should parse params 4', () => {
     expect(
-      urlFormat('http://www.base.com/', '/path/po', { name: 'mx', age: 20, obj: { o1: 'o1' } })
-    ).toEqual('http://www.base.com/path/po?name=mx&age=20&obj=[object Object]')
+      urlFormat('http://www.base.com/', '/path/po', { name: 'hx', age: 20, obj: { o1: 'o1' } })
+    ).toEqual('http://www.base.com/path/po?name=hx&age=20&obj=[object Object]')
   })
 
   it('should parse params 5', () => {
     expect(
-      urlFormat('http://www.base.com/', '/path/po', { name: 'mx', age: 20, obj: [1, 2] })
-    ).toEqual('http://www.base.com/path/po?name=mx&age=20&obj=1,2')
+      urlFormat('http://www.base.com/', '/path/po', { name: 'hx', age: 20, obj: [1, 2] })
+    ).toEqual('http://www.base.com/path/po?name=hx&age=20&obj=1,2')
   })
 })

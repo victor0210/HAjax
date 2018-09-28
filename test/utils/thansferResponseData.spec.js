@@ -27,22 +27,22 @@ describe('utils::transferResponseData', () => {
   it('content of JSON.stringify should be converted to json object', () => {
     const xhr = {
       responseType: 'json',
-      response: JSON.stringify({ name: 'mx' })
+      response: JSON.stringify({ name: 'hx' })
     }
 
     expect(
       transferResponseData(xhr)
-    ).toEqual({ name: 'mx' })
+    ).toEqual({ name: 'hx' })
   })
 
   it('content of json shouldn`t be converted to another type', () => {
     const xhr = {
       responseType: 'json',
-      response: { name: 'mx' }
+      response: { name: 'hx' }
     }
 
     expect(
       transferResponseData(xhr)
-    ).toEqual({ name: 'mx' })
+    ).toEqual({ name: 'hx' })
   })
 })

@@ -8,7 +8,7 @@
 </head>
 <body>
 <script>
-	const r = mx.get('http://majax.test/index.php').then(resp => {
+	const r = hx.get('http://majax.test/index.php').then(resp => {
 		console.log('success', resp)
 	}).catch(resp => {
 		console.log('failed', resp)

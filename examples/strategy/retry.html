@@ -8,11 +8,11 @@
 </head>
 <body>
 <script>
-    mx.setStrategy(
-    	mx.createStrategy('*')
+    hx.setStrategy(
+    	hx.createStrategy('*')
     )
 
-	mx.get('http://xxx.test/index.php', {
+	hx.get('http://xxx.test/index.php', {
 		retryLimit: 3
 	}).then(resp => {
 		console.log('success', resp)
@@ -20,7 +20,7 @@
 		console.log('failed---1', resp)
 	})
 
-	mx.get('http://xxx.test/index.php').then(resp => {
+	hx.get('http://xxx.test/index.php').then(resp => {
 		console.log('success', resp)
 	}).catch(resp => {
 		console.log('failed----2', resp)

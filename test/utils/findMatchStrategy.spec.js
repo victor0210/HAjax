@@ -16,7 +16,7 @@ describe('utils::findMatchStrategy', () => {
     ).toEqual(strategy)
 
     expect(
-      findMatchStrategy(strategy, 'http://www.test.com?name=mx')
+      findMatchStrategy(strategy, 'http://www.test.com?name=hx')
     ).toEqual(strategy)
   })
 
@@ -34,17 +34,17 @@ describe('utils::findMatchStrategy', () => {
     ).toEqual(null)
 
     expect(
-      findMatchStrategy(strategy, 'http://www.test.com?name=mx')
+      findMatchStrategy(strategy, 'http://www.test.com?name=hx')
     ).toEqual(strategy)
   })
 
   it('should be match rules with path', () => {
     let strategy = {
-      urlExp: 'www.test.com/path?name=mx'
+      urlExp: 'www.test.com/path?name=hx'
     }
 
     expect(
-      findMatchStrategy(strategy, 'www.test.com/path?name=mx')
+      findMatchStrategy(strategy, 'www.test.com/path?name=hx')
     ).toEqual(strategy)
 
     expect(
@@ -52,13 +52,13 @@ describe('utils::findMatchStrategy', () => {
     ).toEqual(null)
 
     expect(
-      findMatchStrategy(strategy, 'http://www.test.com?name=mx')
+      findMatchStrategy(strategy, 'http://www.test.com?name=hx')
     ).toEqual(null)
   })
 
   it('should be match rules with path', () => {
     let strategy = [{
-      urlExp: 'www.test.com/path?name=mx'
+      urlExp: 'www.test.com/path?name=hx'
     }, {
       urlExp: /test/g
     }, {
@@ -66,7 +66,7 @@ describe('utils::findMatchStrategy', () => {
     }]
 
     expect(
-      findMatchStrategy(strategy, 'www.test.com/path?name=mx')
+      findMatchStrategy(strategy, 'www.test.com/path?name=hx')
     ).toEqual(strategy[0])
 
     expect(
@@ -74,7 +74,7 @@ describe('utils::findMatchStrategy', () => {
     ).toEqual(strategy[2])
 
     expect(
-      findMatchStrategy(strategy, 'http://www.test.com?name=mx')
+      findMatchStrategy(strategy, 'http://www.test.com?name=hx')
     ).toEqual(strategy[1])
   })
 })

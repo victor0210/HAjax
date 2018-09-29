@@ -1,4 +1,4 @@
-import {RESPONSE_TYPE_TEXT} from "../src/config/responseTypes";
+import {RESPONSE_TYPE_TEXT} from "../config/responseTypes";
 
 const transferResponseData = (xhr) => {
     switch (xhr.responseType) {

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../../dist/bundle.js"></script>
+</head>
+<body>
+<script>
+	function search() {
+		mx.get('http://majax.test/index.php', {
+			mode: 'debounce'
+			//debounceTime: 300 //default
+		}).then(resp => {
+			console.log('success', resp)
+		}).catch(resp => {
+			console.log('failed', resp)
+		})
+	}
+</script>
+
+<input type="text" oninput="search()">
+</body>
+</html>

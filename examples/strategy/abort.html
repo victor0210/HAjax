@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../../dist/bundle.js"></script>
+</head>
+<body>
+<script>
+	const r = mx.get('http://majax.test/index.php').then(resp => {
+		console.log('success', resp)
+	}).catch(resp => {
+		console.log('failed', resp)
+	})
+
+	r.abort()
+</script>
+</body>
+</html>

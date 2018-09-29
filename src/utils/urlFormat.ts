@@ -1,13 +1,9 @@
 import {
     AND_MARK, EMPTY, END_SLASH, EQUAL_MARK, MULTIPLE_SLASH, QUESTION_MARK, SINGE_SLASH,
     URL_PREFIX
-} from "../src/config/regexp";
+} from "../config/regexp";
 
-const urlFormat = (
-    baseUrl: String,
-    url: String,
-    params?: object
-): String => {
+const urlFormat = (baseUrl: String, url: String, params?: Object): String => {
     url.replace(MULTIPLE_SLASH, SINGE_SLASH)
 
     if (params) {
@@ -23,7 +19,7 @@ const urlFormat = (
     }
 
     if (URL_PREFIX.test(url)) return url
-    if (baseUrl) url = `${baseUrl}/${url}`
+    if (baseUrl) url = `${baseUrl}${SINGE_SLASH}${url}`
 
     return encodeURI(url)
 }

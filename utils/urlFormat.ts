@@ -1,23 +1,28 @@
+import {
+    AND_MARK, EMPTY, END_SLASH, EQUAL_MARK, MULTIPLE_SLASH, QUESTION_MARK, SINGE_SLASH,
+    URL_PREFIX
+} from "../src/regexp";
+
 const urlFormat = (
     baseUrl: String,
     url: String,
     params?: object
 ): String => {
-    url.replace(/[/][/]+/, '/')
+    url.replace(MULTIPLE_SLASH, SINGE_SLASH)
 
     if (params) {
-        url.replace(/[/]$/, '')
-        url += '?'
+        url.replace(END_SLASH, EMPTY)
+        url += QUESTION_MARK
 
         let paramsTarget = []
         for (let k in params) {
-            paramsTarget.push(`${k}=${params[k]}`)
+            paramsTarget.push(`${k}${EQUAL_MARK}${params[k]}`)
         }
 
-        url += paramsTarget.join('&')
+        url += paramsTarget.join(AND_MARK)
     }
 
-    if (/^http|^https/.test(url)) return url
+    if (URL_PREFIX.test(url)) return url
     if (baseUrl) url = `${baseUrl}/${url}`
 
     return encodeURI(url)

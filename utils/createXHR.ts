@@ -14,8 +14,11 @@ const configInject = (xhr, requestInstance) => {
 
 const xhrUtils = {
     common: (xhr, config) => {
-        //config special and open xhr
-        xhrUtils[config.method](xhr, config)
+        //config common
+        xhr.open(
+            config.method.toUpperCase(),
+            urlFormat(config.baseUrl, config.url, config.params)
+        )
 
         //headers
         for (let header in config.headers) {
@@ -25,23 +28,6 @@ const xhrUtils = {
         xhr.responseType = config.responseType
         //withCredentials
         xhr.withCredentials = config.withCredentials
-    },
-
-    get: (xhr, config) => {
-        //config common
-        xhr.open(
-            'GET',
-            urlFormat(config.baseUrl, config.url, config.params),
-            true
-        )
-    },
-
-    post: (xhr, config) => {
-        xhr.open(
-            'POST',
-            urlFormat(config.baseUrl, config.url),
-            true
-        )
     }
 }
 

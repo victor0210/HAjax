@@ -8,6 +8,72 @@
 </head>
 <body>
 <script>
+	//get
+	mx.get('http://majax.test/index.php').then(resp => {
+		console.log('success', resp)
+	}).catch(resp => {
+		console.log('failed', resp)
+	})
+
+	//get with params
+	mx.get('http://majax.test/index.php', {
+		params: {
+			name: 'majax',
+			token: 'bennnis'
+		}
+	}).then(resp => {
+		console.log('success', resp)
+	}).catch(resp => {
+		console.log('failed', resp)
+	})
+
+	//post
+	mx.post('http://majax.test/index.php').then(resp => {
+		console.log('success', resp)
+	}).catch(resp => {
+		console.log('failed', resp)
+	})
+
+	//post with data
+	mx.post('http://majax.test/index.php', {
+		data: {
+			name: 'majax',
+			token: 'bennnis'
+		}
+	}).then(resp => {
+		console.log('success', resp)
+	}).catch(resp => {
+		console.log('failed', resp)
+	})
+
+	//track unStandard way
+	//1. get with data: should be nothing
+	mx.get('http://majax.test/index.php', {
+		data: {
+			name: 'majax',
+			token: 'bennnis'
+		}
+	}).then(resp => {
+		console.log('success', resp)
+	}).catch(resp => {
+		console.log('failed', resp)
+	})
+
+	//2. post with params: should be format
+	mx.post('http://majax.test/index.php', {
+		params: {
+			name: 'majax',
+			token: 'bennnis'
+		},
+		data: {
+			name: 'majaxPost',
+			token: 'bennnisPost'
+		}
+	}).then(resp => {
+		console.log('success', resp)
+	}).catch(resp => {
+		console.log('failed', resp)
+	})
 </script>
 </body>
 </html>

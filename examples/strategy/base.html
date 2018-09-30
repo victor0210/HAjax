@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../../dist/bundle.js"></script>
+</head>
+<body>
+<script>
+    mx.config.storeStrategy = [{
+    	url: '*',
+        maxAge: 0
+    }]
+
+	//get
+	mx.get('http://majax.test/index.php').then(resp => {
+		console.log('success', resp)
+	}).catch(resp => {
+		console.log('failed', resp)
+	})
+</script>
+</body>
+</html>

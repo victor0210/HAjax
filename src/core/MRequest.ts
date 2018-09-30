@@ -2,6 +2,8 @@ import createXHR from '../../utils/createXHR'
 import MResponse from "./MResponse";
 import {STATE_DONE} from "../config/readyState";
 import Majax from "./Majax";
+import findMatchStrategy from "../../utils/findMatchStrategy";
+import {GET_FLAG} from "../config/requestMethods";
 
 export default class MRequest {
     private _uuid: Number = ~~(Math.random() * 10e8)
@@ -47,7 +49,10 @@ export default class MRequest {
     xhr: XMLHttpRequest
 
     // `config` is what pass through the whole request flow
-    config: Object
+    config: any
+
+
+    iniCacheWay: Boolean
 
     // `_majaxInstance` driver of this request, inject by visit
     _majaxInstance: Majax
@@ -73,11 +78,12 @@ export default class MRequest {
         this.withCredentials= config.withCredentials
         this.responseType = config.responseType
         this.config = config
+        this.iniCacheWay = false
         this._onFulfilled = onFulfilled
         this._onFailed = onFailed
     }
 
-    private _initXHR() {
+    private initXHR() {
         // xhr in browser
         const xhr = createXHR(this)
 
@@ -93,6 +99,8 @@ export default class MRequest {
         }
 
         this.xhr = xhr
+
+        return xhr
     }
 
     public success(responseInstance) {
@@ -111,9 +119,24 @@ export default class MRequest {
         this._majaxInstance = majaxInstance
     }
 
+    /**
+     * @description
+     * 1. check if has store strategy           | do request if not
+     * 2. check if match store strategy         | do request if not
+     * 3. check if has cache and not expire     | do request if not
+     * 4. catch data from cache and response
+     * */
     public send() {
-        this._initXHR()
+        if (this.method.toLowerCase() === GET_FLAG && this.config.storeStrategy) {
+            let rule = findMatchStrategy(this.config.storeStrategy, this.url)
 
-        this.xhr.send(JSON.stringify(this.data))
+            if (rule) {
+                this.iniCacheWay = true
+                this._majaxInstance.storeWithRule(rule, this)
+            }
+        } else {
+            this.initXHR()
+            this.xhr.send(JSON.stringify(this.data))
+        }
     }
 }

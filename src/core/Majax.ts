@@ -53,6 +53,19 @@ class Majax {
     public _runResp(responseInstance) {
         this._responseQueue.enqueue(responseInstance)
         this._emitResponseFlow()
+
+        if (responseInstance.request.iniCacheWay) {
+            this._store[responseInstance.request.url].hasCache = true
+            while (this._store[responseInstance.request.url].listeners.length > 0) {
+                let req = this._store[responseInstance.request.url].listeners.shift()
+                this._runResp (
+                    new MResponse(
+                        this._store[responseInstance.request.url].xhr,
+                        req
+                    )
+                )
+            }
+        }
     }
 
     private _emitResponseFlow() {
@@ -79,9 +92,31 @@ class Majax {
     private _pushToRequestPool(requestInstance) {
         this._requestPool[requestInstance.getUUID()] = requestInstance
         this._requestDealTarget = null
-        this._emitRequestFlow()
-
         requestInstance.send()
+
+        this._emitRequestFlow()
+    }
+
+    public storeWithRule (rule, requestInstance) {
+        if (!this._store[requestInstance.url]) {
+            this._store[requestInstance.url] = {
+                hasCache: false,
+                xhr: requestInstance.initXHR(),
+                listeners: []
+            }
+            requestInstance.xhr.send(JSON.stringify(requestInstance.data))
+        } else {
+            this._store[requestInstance.url].listeners.push(requestInstance)
+
+            if (this._store[requestInstance.url].hasCache) {
+                this._runResp (
+                    new MResponse(
+                        this._store[requestInstance.url].xhr,
+                        requestInstance
+                    )
+                )
+            }
+        }
     }
 
     /**

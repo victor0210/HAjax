@@ -1,3 +1,3 @@
-# M-Ajax v1.0.0
+# HAjax v1.0.0
 
-multiple ajax solution (sync or async, the choice is yours!)
+High-Availability Asynchronous Javascript And XML

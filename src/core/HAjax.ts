@@ -1,9 +1,9 @@
 import defaults from '../config/initConfig'
 import mergeConfig from "../utils/mergeConfig";
 import {GET_FLAG, POST_FLAG} from "../config/requestMethods";
-import MRequest from "./MRequest";
+import HRequest from "./HRequest";
 import Queue from "../impelments/Queue";
-import MResponse from "./MResponse";
+import HResponse from "./HResponse";
 import {CACHE_FOREVER, RESP_SUCCESS_CODE_PREFIX} from "../config/regexp";
 import {containedInArr, matchType} from "../utils/matcher";
 import {throwIf, warnIf} from "../utils/conditionCheck";
@@ -11,14 +11,14 @@ import {DEBOUNCE, THROTTLE} from "../config/storeMode";
 import {TYPE_OBJECT} from "../config/baseType";
 import Strategy from "./Strategy";
 
-class Majax {
+class HAjax {
     // `_requestDealTarget`
     // this is a request instance who is dealing and only one instance can be deal at the same time
-    private _requestDealTarget: MRequest
+    private _requestDealTarget: HRequest
 
     // `_responseDealTarget`
     // this is a response instance who is dealing and only one instance can be deal at the same time
-    private _responseDealTarget: MResponse
+    private _responseDealTarget: HResponse
 
     // `store`
     // store is the cache pool for every request which match store strategy rule
@@ -91,7 +91,7 @@ class Majax {
      * @desc entry of request, request enqueue
      * @param requestInstance
      * */
-    public _runReq(requestInstance: MRequest) {
+    public _runReq(requestInstance: HRequest) {
         const requestAction = () => {
             // inject majax driver into request instance and start real request flow
             requestInstance.accept(this)
@@ -155,7 +155,7 @@ class Majax {
      * @desc entry of response, response enqueue
      * @param responseInstance
      * */
-    public _runResp(responseInstance: MResponse) {
+    public _runResp(responseInstance: HResponse) {
         if (!responseInstance.request.aborted) {
             this.responseQueue.enqueue(responseInstance)
             this._emitResponseFlow()
@@ -174,7 +174,7 @@ class Majax {
                 let req = cache.concurrentBuffer.shift()
 
                 !req.aborted && this._runResp(
-                    new MResponse(
+                    new HResponse(
                         cache.xhr,
                         req
                     )
@@ -198,7 +198,7 @@ class Majax {
      * @desc deal with complete response instance and emit callback
      * @param responseInstance
      * */
-    private _handleComplete(responseInstance: MResponse) {
+    private _handleComplete(responseInstance: HResponse) {
         this._responseDealTarget = null
         delete this.requestPool[responseInstance.request.getUUID()]
 
@@ -216,7 +216,7 @@ class Majax {
      * @desc just a collection of request which on sending
      * @param requestInstance
      * */
-    private _pushToRequestPool(requestInstance: MRequest) {
+    private _pushToRequestPool(requestInstance: HRequest) {
         this.requestPool[requestInstance.getUUID()] = requestInstance
         this._requestDealTarget = null
         requestInstance.send()
@@ -229,12 +229,12 @@ class Majax {
      * @param rule
      * @param requestInstance
      * */
-    public storeWithRule(rule, requestInstance: MRequest) {
+    public storeWithRule(rule, requestInstance: HRequest) {
         let cache = this.store[requestInstance.fullUrl]
 
         const runRespWithStore = () => {
             this._runResp(
-                new MResponse(
+                new HResponse(
                     cache.xhr,
                     requestInstance
                 )
@@ -263,7 +263,7 @@ class Majax {
         }
     }
 
-    public rushRequest(rule, requestInstance: MRequest) {
+    public rushRequest(rule, requestInstance: HRequest) {
         requestInstance.sendAjax()
 
         this.rushStore(
@@ -336,7 +336,7 @@ class Majax {
      * @desc global request api
      * @param opts
      * */
-    public request(opts: object): MRequest {
+    public request(opts: object): HRequest {
         // check if match debounce or throttle strategies
         throwIf(
             !matchType(opts, TYPE_OBJECT),
@@ -359,7 +359,7 @@ class Majax {
             if (!modeIsValid) delete options.mode
         }
 
-        const request = new MRequest(options)
+        const request = new HRequest(options)
 
         setTimeout(() => {
             this._runReq(request)
@@ -368,7 +368,7 @@ class Majax {
         return request
     }
 
-    public get(url: string, opts = {}): MRequest {
+    public get(url: string, opts = {}): HRequest {
         return this.request({
             ...opts,
             url,
@@ -376,7 +376,7 @@ class Majax {
         })
     }
 
-    public post(url: string, opts = {}): MRequest {
+    public post(url: string, opts = {}): HRequest {
         return this.request({
             ...opts,
             url,
@@ -430,4 +430,4 @@ class Majax {
     // }
 }
 
-export default Majax
+export default HAjax

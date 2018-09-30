@@ -1,12 +1,12 @@
-import MResponse from "./MResponse";
+import HResponse from "./HResponse";
 import {STATE_DONE} from "../config/readyState";
-import Majax from "./Majax";
+import HAjax from "./HAjax";
 import findMatchStrategy from "../utils/findMatchStrategy";
 import {GET_FLAG} from "../config/requestMethods";
 import urlFormat from "../utils/urlFormat";
 import {RESP_SUCCESS_CODE_PREFIX} from "../config/regexp";
 
-export default class MRequest {
+export default class HRequest {
     // `_uuid`
     // "Universally Unique Identifier" for marking per request:
     private _uuid: number = ~~(Math.random() * 10e8)
@@ -86,7 +86,7 @@ export default class MRequest {
 
     // `majaxInstance`
     // driver of this request, inject by visit
-    public majaxInstance: Majax
+    public majaxInstance: HAjax
 
     // `aborted`
     // abort flag for concurrent requests buffer area
@@ -133,7 +133,7 @@ export default class MRequest {
      * @desc emit success handler running
      * @param responseInstance
      * */
-    public success(responseInstance: MResponse) {
+    public success(responseInstance: HResponse) {
         this._onFulfilled(responseInstance)
     }
 
@@ -141,7 +141,7 @@ export default class MRequest {
      * @desc emit failed handler running
      * @param responseInstance
      * */
-    public failed(responseInstance: MResponse) {
+    public failed(responseInstance: HResponse) {
         this._onFailed(responseInstance)
     }
 
@@ -198,7 +198,7 @@ export default class MRequest {
      * @desc accept majax instance for visiting
      * @param majaxInstance
      * */
-    public accept(majaxInstance: Majax) {
+    public accept(majaxInstance: HAjax) {
         this.majaxInstance = majaxInstance
     }
 
@@ -282,7 +282,7 @@ export default class MRequest {
                     }, this.retryBuffer)
                 } else {
                     this.majaxInstance._runResp(
-                        new MResponse(
+                        new HResponse(
                             xhr,
                             this
                         )

@@ -16,9 +16,9 @@ declare interface Config {
     responseType: any
 }
 
-declare interface Majax {
-    _requestDealTarget: MRequest
-    _responseDealTarget: MResponse
+declare interface HAjax {
+    _requestDealTarget: HRequest
+    _responseDealTarget: HResponse
     store: object
     throttleStore: object
     debounceStore: object
@@ -31,7 +31,7 @@ declare interface Majax {
     config: Config
 }
 
-declare interface MRequest {
+declare interface HRequest {
     _uuid: number
     _onFulfilled: Function
     _onFailed: Function
@@ -48,7 +48,7 @@ declare interface MRequest {
     xhr: XMLHttpRequest
     config: Config
     withRushStore: boolean
-    majaxInstance: Majax
+    majaxInstance: HAjax
     aborted: boolean
     retryLimit: number
     retryBuffer: number
@@ -57,13 +57,13 @@ declare interface MRequest {
     throttleTime: number
 }
 
-declare interface MResponse {
+declare interface HResponse {
     data: any
     status: number
     statusText: string
     headers: object
     config: Config
-    request: MRequest
+    request: HRequest
 }
 
 declare interface Strategy {

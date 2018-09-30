@@ -40,7 +40,7 @@ const findMatchStrategy = (rules: Array<Strategy> | Strategy, url: any) => {
         if (validStrategy && matchRule(rules, url)) matchedRule = rules
     }
 
-    if (matchedRule) return matchedRule
+    return matchedRule
 }
 
 const matchRule = (rule: Strategy, url: any) => {

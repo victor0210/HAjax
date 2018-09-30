@@ -8,12 +8,12 @@
 </head>
 <body>
 <script>
-	mx.setStrategy(
-		mx.createStrategy('http://majax.test/index.php')
+	hx.setStrategy(
+		hx.createStrategy('http://majax.test/index.php')
     )
 
 	//get
-	mx.get('http://majax.test/index.php').then(resp => {
+	hx.get('http://majax.test/index.php').then(resp => {
 		console.log('success', resp)
 	}).catch(resp => {
 		console.log('failed', resp)
@@ -21,7 +21,7 @@
 
 	setTimeout(() => {
 		//get
-		mx.get('http://majax.test/index.php').then(resp => {
+		hx.get('http://majax.test/index.php').then(resp => {
 			console.log('success', resp)
 		}).catch(resp => {
 			console.log('failed', resp)
@@ -29,7 +29,7 @@
 
 		setTimeout(() => {
 			//get
-			mx.get('http://majax.test/index.php').then(resp => {
+			hx.get('http://majax.test/index.php').then(resp => {
 				console.log('success', resp)
 			}).catch(resp => {
 				console.log('failed', resp)
@@ -39,7 +39,7 @@
 
 
 	//get with params
-	mx.get('http://majax.test/index.php', {
+	hx.get('http://majax.test/index.php', {
 		params: {
 			name: 'majax',
 			token: 'bennnis'
@@ -51,14 +51,14 @@
 	})
 
 	//post
-	mx.post('http://majax.test/index.php').then(resp => {
+	hx.post('http://majax.test/index.php').then(resp => {
 		console.log('success', resp)
 	}).catch(resp => {
 		console.log('failed', resp)
 	})
 
 	//post with data
-	mx.post('http://majax.test/index.php', {
+	hx.post('http://majax.test/index.php', {
 		data: {
 			name: 'majax',
 			token: 'bennnis'
@@ -71,7 +71,7 @@
 
 	//track unStandard way
 	//1. get with data: should be nothing
-	mx.get('http://majax.test/index.php', {
+	hx.get('http://majax.test/index.php', {
 		data: {
 			name: 'majax',
 			token: 'bennnis'
@@ -83,7 +83,7 @@
 	})
 
 	//2. post with params: should be format
-	mx.post('http://majax.test/index.php', {
+	hx.post('http://majax.test/index.php', {
 		params: {
 			name: 'majax',
 			token: 'bennnis'

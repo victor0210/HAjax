@@ -414,7 +414,7 @@ class HAjax {
      * @param strategy
      * */
     public setStrategy(strategy: any) {
-        this.storeStrategy = Array.isArray(strategy) ? new Set(strategy) : strategy
+        this.storeStrategy = strategy
     }
 
     /**
@@ -427,7 +427,7 @@ class HAjax {
             // strategies for concurrentBuffer when clear action is remain to be considered
             this.storeStrategy = null
         } else {
-            if (matchInstance(this.storeStrategy, Set)) {
+            if (Array.isArray(this.storeStrategy)) {
                 this.storeStrategy = this.storeStrategy.filter(strategy => {
                     return strategy.urlExp !== exp
                 })

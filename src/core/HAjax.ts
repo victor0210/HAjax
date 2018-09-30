@@ -5,7 +5,7 @@ import HRequest from "./HRequest";
 import Queue from "../impelments/Queue";
 import HResponse from "./HResponse";
 import {CACHE_FOREVER, RESP_SUCCESS_CODE_PREFIX} from "../config/regexp";
-import {containedInArr, matchType} from "../utils/matcher";
+import {containedInArr, matchInstance, matchType} from "../utils/matcher";
 import {throwIf, warnIf} from "../utils/conditionCheck";
 import {DEBOUNCE, THROTTLE} from "../config/storeMode";
 import {TYPE_OBJECT} from "../config/baseType";
@@ -69,7 +69,7 @@ class HAjax {
     // store strategy is very special because it has Multiple-Request optimization such as 'debounce' and 'throttle'
     // you don't worry the blow requests sending to server without the first request complete
     // they will be pushed to cache listener and waiting for the first request complete
-    public storeStrategy: Array<Strategy> | Strategy
+    public storeStrategy: any
 
     // `config`
     // global config bind on a majax instance, which will inject into every request instance
@@ -408,11 +408,12 @@ class HAjax {
     public createStrategy(urlExp: any, bufferTime: number = CACHE_FOREVER): Strategy {
         return new Strategy(urlExp, bufferTime)
     }
+
     /**
      * @desc set new store strategy for driver, which could cover the old strategy
      * @param strategy
      * */
-    public setStrategy(strategy: Array<Strategy> | Strategy) {
+    public setStrategy(strategy: any) {
         this.storeStrategy = strategy
     }
 
@@ -420,14 +421,21 @@ class HAjax {
      * @desc clear data in store by hand
      * @param exp: valid value is "string", "Regexp", "*"
      * */
-    // public clearStore(exp?) {
-    //     if (!exp) {
-    //         // callbacks would not work if clear with follow
-    //         // strategies for concurrentBuffer when clear action is remain to be considered
-    //         // TODO: strategies for clear
-    //         this.store = null
-    //     }
-    // }
+    public clearStore(exp?) {
+        if (!exp) {
+            // callbacks would not work if clear with follow
+            // strategies for concurrentBuffer when clear action is remain to be considered
+            this.storeStrategy = null
+        } else {
+            if (Array.isArray(this.storeStrategy)) {
+                this.storeStrategy = this.storeStrategy.filter(strategy => {
+                    return strategy.urlExp !== exp
+                })
+            } else if (this.storeStrategy.urlExp === exp) {
+                this.storeStrategy = null
+            }
+        }
+    }
 }
 
 export default HAjax

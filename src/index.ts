@@ -2,5 +2,5 @@ import mx from './core/Majax'
 
 // if bundle with mountWindow
 (function (global) {
-    global['mx'] = mx
+    global['mx'] = new mx()
 })(window)

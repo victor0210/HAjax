@@ -1,11 +1,22 @@
 import {
-    AND_MARK, EMPTY, END_SLASH, EQUAL_MARK, MULTIPLE_SLASH, QUESTION_MARK, SINGE_SLASH,
-    URL_PREFIX
+    ABSOLUTE_PATH, AND_MARK, EMPTY, END_SLASH, EQUAL_MARK, HEAD_SLASH, QUESTION_MARK, SINGE_SLASH
 } from "../config/regexp";
 
-const urlFormat = (baseUrl: String, url: String, params?: Object): String => {
-    url.replace(MULTIPLE_SLASH, SINGE_SLASH)
+const urlFormat = (baseUrl: string = SINGE_SLASH, relativeUrl: string, params?: object): string => {
+    let url
 
+    if (isAbsolute(relativeUrl)) {
+        url = relativeUrl
+    } else {
+        url = relativeUrl
+            ? baseUrl.replace(END_SLASH, EMPTY) + SINGE_SLASH + relativeUrl.replace(HEAD_SLASH, EMPTY)
+            : baseUrl.replace(END_SLASH, SINGE_SLASH);
+    }
+
+    return buildUrl(url, params)
+}
+
+const buildUrl = (url, params) => {
     if (params) {
         url.replace(END_SLASH, EMPTY)
         url += QUESTION_MARK
@@ -18,10 +29,11 @@ const urlFormat = (baseUrl: String, url: String, params?: Object): String => {
         url += paramsTarget.join(AND_MARK)
     }
 
-    if (URL_PREFIX.test(url)) return url
-    if (baseUrl) url = `${baseUrl}${SINGE_SLASH}${url}`
+    return url.replace(END_SLASH, EMPTY)
+}
 
-    return encodeURI(url)
+const isAbsolute = (url) => {
+    return ABSOLUTE_PATH.test(url)
 }
 
 export default urlFormat

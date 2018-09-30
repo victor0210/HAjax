@@ -8,20 +8,20 @@ export default class MResponse {
 
     // `status`
     // is response status code
-    public status: Number
+    public status: number
 
     // `statusText`
     // is the HTTP status message from the server response `statusText` is the HTTP status message from the server respo
-    public statusText: String
+    public statusText: string
 
     // `headers`
     // the headers that the server responded with
     // All header names are lower cased
-    public headers: Object
+    public headers: object
 
     // `config`
     // is the config that was provided to `majax` for the request
-    public config: Object
+    public config: object
 
     // `request`
     // MRequest instance which produce this response

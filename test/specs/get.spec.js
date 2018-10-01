@@ -1,5 +1,5 @@
 /* eslint-disable no-undef,no-tabs,no-mixed-spaces-and-tabs */
-import hx from '../../dist/modules/hx.es'
+import hx from '../../release/dist/hx.es'
 
 describe('specs::get', () => {
   it('single request with get', done => {

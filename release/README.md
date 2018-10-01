@@ -8,6 +8,9 @@
 [![build status](https://travis-ci.org/Bennnis/HAjax.svg?branch=master)](https://travis-ci.org/bennnis/hajax)
 [![gitter chat](https://img.shields.io/gitter/room/mzabriskie/hajax.svg)](https://gitter.im/bennnis/Lobby)
 [![Open Source Helpers](https://www.codetriage.com/bennnis/hajax/badges/users.svg)](https://www.codetriage.com/bennnis/hajax)
+[![Join the chat at https://gitter.im/bennnis/Lobby](https://badges.gitter.im/bennnis/Lobby.svg)](https://gitter.im/bennnis/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+浏览器端高可用前端请求解决方案
 
 ## 特性
 
@@ -409,14 +412,15 @@ hx.config.baseURL = '/api';
 hx.config.headers['Auth'] = 'request-auth-token';
 
 // 考虑加入对指定请求类型的header配置
+// hx.config.headers.post['Auth'] = 'xxx';
 ```
 
 ### 创建驱动配置
 
 ```js
-// Set config defaults when creating the instance
+// 创建时配置设置默认设置
 const instance = hx.create({
-  hx.config.baseURL = '/api'
+  baseURL: '/api'
 });
 
 // 继续在实例上进行配置

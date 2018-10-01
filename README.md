@@ -412,14 +412,15 @@ hx.config.baseURL = '/api';
 hx.config.headers['Auth'] = 'request-auth-token';
 
 // 考虑加入对指定请求类型的header配置
+// hx.config.headers.post['Auth'] = 'xxx';
 ```
 
 ### 创建驱动配置
 
 ```js
-// Set config defaults when creating the instance
+// 创建时配置设置默认设置
 const instance = hx.create({
-  hx.config.baseURL = '/api'
+  baseURL: '/api'
 });
 
 // 继续在实例上进行配置

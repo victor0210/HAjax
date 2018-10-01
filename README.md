@@ -1,14 +1,13 @@
 # HAjax
 
-[![Join the chat at https://gitter.im/bennnis/Lobby](https://badges.gitter.im/bennnis/Lobby.svg)](https://gitter.im/bennnis/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-浏览器端高可用前端请求解决方案
-
 [![npm version](https://img.shields.io/npm/v/hajax.svg?style=flat-square)](https://www.npmjs.org/package/hajax)
 [![install size](https://packagephobia.now.sh/badge?p=hajax)](https://packagephobia.now.sh/result?p=hajax)
 [![build status](https://travis-ci.org/Bennnis/HAjax.svg?branch=master)](https://travis-ci.org/bennnis/hajax)
 [![gitter chat](https://img.shields.io/gitter/room/mzabriskie/hajax.svg?style=flat-square)](https://gitter.im/bennnis/Lobby)
 [![Open Source Helpers](https://www.codetriage.com/bennnis/hajax/badges/users.svg)](https://www.codetriage.com/bennnis/hajax)
+[![Join the chat at https://gitter.im/bennnis/Lobby](https://badges.gitter.im/bennnis/Lobby.svg)](https://gitter.im/bennnis/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+浏览器端高可用前端请求解决方案
 
 ## 特性
 

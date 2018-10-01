@@ -1,6 +1,6 @@
 {
   "name": "hajax",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Highly available ajax solution",
   "main": "index.ts",
   "scripts": {

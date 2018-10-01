@@ -2,6 +2,12 @@
 
 浏览器端高可用前端请求解决方案
 
+[![npm version](https://img.shields.io/npm/v/hajax.svg?style=flat-square)](https://www.npmjs.org/package/hajax)
+[![install size](https://packagephobia.now.sh/badge?p=hajax)](https://packagephobia.now.sh/result?p=hajax)
+[![build status](https://travis-ci.org/Bennnis/HAjax.svg?branch=master)](https://travis-ci.org/bennnis/hajax)
+[![gitter chat](https://img.shields.io/gitter/room/mzabriskie/hajax.svg?style=flat-square)](https://gitter.im/bennnis/Lobby)
+[![Open Source Helpers](https://www.codetriage.com/bennnis/hajax/badges/users.svg)](https://www.codetriage.com/bennnis/hajax)
+
 ## 特性
 
 - 轻松的处理Ajax缓存数据，前端请求并发
@@ -167,11 +173,11 @@ hajax：
 //通过createStrategy生成缓存策略
 
 hx.setStrategy(
-	hx.createStrategy('http://hajax.test/index.php', 4000)
+	hx.createStrategy('http://majax.test/index.php', 4000)
 )
 
 //直接发送请求并将数据缓存
-hx.get('http://hajax.test/index.php').then(resp => {
+hx.get('http://majax.test/index.php').then(resp => {
 	console.log('success', resp)
 }).catch(resp => {
 	console.log('failed', resp)
@@ -179,7 +185,7 @@ hx.get('http://hajax.test/index.php').then(resp => {
 
 setTimeout(() => {
 	//直接获取缓存数据
-	hx.get('http://hajax.test/index.php').then(resp => {
+	hx.get('http://majax.test/index.php').then(resp => {
 		console.log('success', resp)
 	}).catch(resp => {
 		console.log('failed', resp)
@@ -187,7 +193,7 @@ setTimeout(() => {
 
 	setTimeout(() => {
 		//缓存过期，重新请求获取数据
-		hx.get('http://hajax.test/index.php').then(resp => {
+		hx.get('http://majax.test/index.php').then(resp => {
 			console.log('success', resp)
 		}).catch(resp => {
 			console.log('failed', resp)
@@ -453,7 +459,7 @@ hx.setResponseInterceptor((resp) => {
 
 ```js
 // 获取返回的请求实例
-const r = hx.get('http://hajax.test/index.php')
+const r = hx.get('http://majax.test/index.php')
 				.then(resp => {
 					// success handler
 				}).catch(resp => {

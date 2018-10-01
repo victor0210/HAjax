@@ -1,5 +1,7 @@
 # HAjax
 
+[![Join the chat at https://gitter.im/bennnis/Lobby](https://badges.gitter.im/bennnis/Lobby.svg)](https://gitter.im/bennnis/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 浏览器端高可用前端请求解决方案
 
 ## 特性

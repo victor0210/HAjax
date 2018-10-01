@@ -161,7 +161,7 @@ class HAjax {
             this._emitResponseFlow()
         }
 
-        const urlKey = responseInstance.request.fullUrl
+        const urlKey = responseInstance.request.fullURL
 
         if (
             responseInstance.request.withRushStore &&
@@ -189,7 +189,7 @@ class HAjax {
     private _emitResponseFlow() {
         if (!this._responseDealTarget && this.responseQueue.hasItem()) {
             this._responseDealTarget = this.responseQueue.unqueue()
-            if (this.responseInterceptor) this.responseInterceptor(this._responseDealTarget.config)
+            if (this.responseInterceptor) this.responseInterceptor(this._responseDealTarget)
             this._handleComplete(this._responseDealTarget)
         }
     }
@@ -230,7 +230,7 @@ class HAjax {
      * @param requestInstance
      * */
     public storeWithRule(rule, requestInstance: HRequest) {
-        let cache = this.store[requestInstance.fullUrl]
+        let cache = this.store[requestInstance.fullURL]
 
         const runRespWithStore = () => {
             this._runResp(
@@ -267,7 +267,7 @@ class HAjax {
         requestInstance.sendAjax()
 
         this.rushStore(
-            requestInstance.fullUrl,
+            requestInstance.fullURL,
             requestInstance.xhr,
             rule.bufferTime
         )
@@ -382,6 +382,10 @@ class HAjax {
             url,
             method: POST_FLAG
         })
+    }
+
+    public create(opts) {
+        return new HAjax(opts)
     }
 
     /**

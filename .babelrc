@@ -1,5 +1,4 @@
 {
-  "presets": ["@babel/preset-env"],
-  "plugins": ["@babel/plugin-transform-runtime", "@babel/plugin-external-helpers"],
-  "exclude": "node_modules/**"
+  "presets": ["env"],
+  "plugins": ["transform-runtime", "external-helpers"]
 }

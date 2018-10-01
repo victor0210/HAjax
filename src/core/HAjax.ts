@@ -65,14 +65,14 @@ class HAjax {
     public requestPool: object
 
     // `storeStrategy`
-    // majax cache strategy, valid key can be "url", "bufferTime"
+    // hajax cache strategy, valid key can be "url", "bufferTime"
     // store strategy is very special because it has Multiple-Request optimization such as 'debounce' and 'throttle'
     // you don't worry the blow requests sending to server without the first request complete
     // they will be pushed to cache listener and waiting for the first request complete
     public storeStrategy: any
 
     // `config`
-    // global config bind on a majax instance, which will inject into every request instance
+    // global config bind on a hajax instance, which will inject into every request instance
     public config: object
 
     constructor(opts = {}) {
@@ -93,7 +93,7 @@ class HAjax {
      * */
     public _runReq(requestInstance: HRequest) {
         const requestAction = () => {
-            // inject majax driver into request instance and start real request flow
+            // inject hajax driver into request instance and start real request flow
             requestInstance.accept(this)
 
             this.requestQueue.enqueue(requestInstance)

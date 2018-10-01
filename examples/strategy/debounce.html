@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <title>Title</title>
 
-    <script src="../../dist/hx.min.js"></script>
+    <script src="../../release/dist/hx.min.js"></script>
 </head>
 <body>
 <script>
 	function search() {
-		hx.get('http://majax.test/index.php', {
+		hx.get('http://hajax.test/index.php', {
 			mode: 'debounce'
 			//debounceTime: 300 //default
 		}).then(resp => {

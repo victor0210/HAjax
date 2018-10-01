@@ -29,7 +29,7 @@ export default class HRequest {
 
     // `baseURL`
     // will be prepended to `url` unless `url` is absolute such as http://* or https://*.
-    // It can be convenient to set `baseURL` for an instance of majax to pass relative URLs
+    // It can be convenient to set `baseURL` for an instance of hajax to pass relative URLs
     // to methods of that instance.
     public baseURL: string
 
@@ -191,7 +191,7 @@ export default class HRequest {
     }
 
     /**
-     * @desc accept majax instance for visiting
+     * @desc accept hajax instance for visiting
      * @param majaxInstance
      * */
     public accept(majaxInstance: HAjax) {
@@ -271,7 +271,7 @@ export default class HRequest {
                         this.sendAjax()
                         this.retryLimit--
 
-                        // if xhr has already in 'majax' store, just cover it with new xhr
+                        // if xhr has already in 'hajax' store, just cover it with new xhr
                         if (this.majaxInstance.store[this.fullURL] &&
                             this.majaxInstance.store[this.fullURL].xhr === xhr
                         ) this.majaxInstance.store[this.fullURL].xhr = this.xhr

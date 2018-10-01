@@ -20,7 +20,7 @@ export default class HResponse {
     public headers: object
 
     // `config`
-    // is the config that was provided to `majax` for the request
+    // is the config that was provided to `hajax` for the request
     public config: object
 
     // `request`

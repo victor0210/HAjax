@@ -167,11 +167,11 @@ hajax：
 //通过createStrategy生成缓存策略
 
 hx.setStrategy(
-	hx.createStrategy('http://majax.test/index.php', 4000)
+	hx.createStrategy('http://hajax.test/index.php', 4000)
 )
 
 //直接发送请求并将数据缓存
-hx.get('http://majax.test/index.php').then(resp => {
+hx.get('http://hajax.test/index.php').then(resp => {
 	console.log('success', resp)
 }).catch(resp => {
 	console.log('failed', resp)
@@ -179,7 +179,7 @@ hx.get('http://majax.test/index.php').then(resp => {
 
 setTimeout(() => {
 	//直接获取缓存数据
-	hx.get('http://majax.test/index.php').then(resp => {
+	hx.get('http://hajax.test/index.php').then(resp => {
 		console.log('success', resp)
 	}).catch(resp => {
 		console.log('failed', resp)
@@ -187,7 +187,7 @@ setTimeout(() => {
 
 	setTimeout(() => {
 		//缓存过期，重新请求获取数据
-		hx.get('http://majax.test/index.php').then(resp => {
+		hx.get('http://hajax.test/index.php').then(resp => {
 			console.log('success', resp)
 		}).catch(resp => {
 			console.log('failed', resp)
@@ -453,7 +453,7 @@ hx.setResponseInterceptor((resp) => {
 
 ```js
 // 获取返回的请求实例
-const r = hx.get('http://majax.test/index.php')
+const r = hx.get('http://hajax.test/index.php')
 				.then(resp => {
 					// success handler
 				}).catch(resp => {

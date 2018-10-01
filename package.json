@@ -1,8 +1,8 @@
 {
-  "name": "majax",
-  "version": "1.0.0",
-  "description": "multiple ajax solution (sync or async, the choice is yours!)",
-  "main": "index.js",
+  "name": "hajax",
+  "version": "0.0.1",
+  "description": "Highly available ajax solution",
+  "main": "index.ts",
   "scripts": {
     "dev": "cross-env NODE_ENV=development ./node_modules/rollup/bin/rollup -c ./build/rollup.dev.js -w",
     "build": "cross-env NODE_ENV=production ./node_modules/rollup/bin/rollup -c ./build/rollup.prod.js",
@@ -11,17 +11,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Bennnis/majax.git"
+    "url": "git+https://github.com/Bennnis/HAjax.git"
   },
   "keywords": [
-    "ajax"
+    "ajax",
+    "cache",
+    "javascript",
+    "debounce",
+    "throttle",
+    "concurrent"
   ],
   "author": "bennnis",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Bennnis/majax/issues"
+    "url": "https://github.com/Bennnis/HAjax/issues"
   },
-  "homepage": "https://github.com/Bennnis/majax#readme",
+  "homepage": "https://github.com/Bennnis/HAjax#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",

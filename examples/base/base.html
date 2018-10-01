@@ -9,16 +9,16 @@
 <body>
 <script>
 	//get
-	hx.get('http://majax.test/index.php').then(resp => {
+	hx.get('http://hajax.test/index.php').then(resp => {
 		console.log('success', resp)
 	}).catch(resp => {
 		console.log('failed', resp)
 	})
 
 	//get with params
-	hx.get('http://majax.test/index.php', {
+	hx.get('http://hajax.test/index.php', {
 		params: {
-			name: 'majax',
+			name: 'hajax',
 			token: 'bennnis'
 		}
 	}).then(resp => {
@@ -28,16 +28,16 @@
 	})
 
 	//post
-	hx.post('http://majax.test/index.php').then(resp => {
+	hx.post('http://hajax.test/index.php').then(resp => {
 		console.log('success', resp)
 	}).catch(resp => {
 		console.log('failed', resp)
 	})
 
 	//post with data
-	hx.post('http://majax.test/index.php', {
+	hx.post('http://hajax.test/index.php', {
 		data: {
-			name: 'majax',
+			name: 'hajax',
 			token: 'bennnis'
 		}
 	}).then(resp => {
@@ -48,9 +48,9 @@
 
 	//track unStandard way
 	//1. get with data: should be nothing
-	hx.get('http://majax.test/index.php', {
+	hx.get('http://hajax.test/index.php', {
 		data: {
-			name: 'majax',
+			name: 'hajax',
 			token: 'bennnis'
 		}
 	}).then(resp => {
@@ -60,9 +60,9 @@
 	})
 
 	//2. post with params: should be format
-	hx.post('http://majax.test/index.php', {
+	hx.post('http://hajax.test/index.php', {
 		params: {
-			name: 'majax',
+			name: 'hajax',
 			token: 'bennnis'
 		},
 		data: {

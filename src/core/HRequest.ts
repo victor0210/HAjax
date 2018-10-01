@@ -134,7 +134,7 @@ export default class HRequest {
      * @param responseInstance
      * */
     public success(responseInstance: HResponse) {
-        this._onFulfilled(responseInstance)
+        this._onFulfilled && this._onFulfilled(responseInstance)
     }
 
     /**
@@ -142,7 +142,7 @@ export default class HRequest {
      * @param responseInstance
      * */
     public failed(responseInstance: HResponse) {
-        this._onFailed(responseInstance)
+        this._onFailed && this._onFailed(responseInstance)
     }
 
     /**

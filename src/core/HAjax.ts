@@ -189,7 +189,7 @@ class HAjax {
     private _emitResponseFlow() {
         if (!this._responseDealTarget && this.responseQueue.hasItem()) {
             this._responseDealTarget = this.responseQueue.unqueue()
-            if (this.responseInterceptor) this.responseInterceptor(this._responseDealTarget.config)
+            if (this.responseInterceptor) this.responseInterceptor(this._responseDealTarget)
             this._handleComplete(this._responseDealTarget)
         }
     }

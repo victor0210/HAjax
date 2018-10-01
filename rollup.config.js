@@ -1,4 +1,3 @@
-import babel from 'rollup-plugin-babel'
 import typescript from 'rollup-plugin-typescript'
 import alias from 'rollup-plugin-alias'
 import resolve from 'rollup-plugin-node-resolve'
@@ -8,7 +7,6 @@ import aliasConfig from './build/alias'
 const env = process.env.NODE_ENV
 
 let plugins = [
-  babel(),
   typescript(),
   alias({
     resolve: ['.ts', '.js'],

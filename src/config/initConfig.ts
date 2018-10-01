@@ -2,7 +2,7 @@ import {RESPONSE_TYPE_JSON} from "./responseTypes";
 
 export default {
     // url prefix
-    baseUrl: null,
+    baseUrl: '/',
 
     // request headers
     headers: {

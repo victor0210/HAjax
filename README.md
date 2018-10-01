@@ -2,11 +2,11 @@
 
 浏览器端高可用前端请求解决方案
 
-[![npm version](https://img.shields.io/npm/v/hajax.svg?style=flat-square)](https://www.npmjs.org/package/hajax)
+[![npm version](https://img.shields.io/npm/v/hajax.svg)](https://www.npmjs.org/package/hajax)
 [![Github file size](https://img.shields.io/github/size/Bennnis/HAjax/release/dist/hx.min.js.svg)](https://github.com/Bennnis/HAjax/blob/master/release/dist/hx.min.js)
 [![install size](https://packagephobia.now.sh/badge?p=hajax)](https://packagephobia.now.sh/result?p=hajax)
 [![build status](https://travis-ci.org/Bennnis/HAjax.svg?branch=master)](https://travis-ci.org/bennnis/hajax)
-[![gitter chat](https://img.shields.io/gitter/room/mzabriskie/hajax.svg?style=flat-square)](https://gitter.im/bennnis/Lobby)
+[![gitter chat](https://img.shields.io/gitter/room/mzabriskie/hajax.svg)](https://gitter.im/bennnis/Lobby)
 [![Open Source Helpers](https://www.codetriage.com/bennnis/hajax/badges/users.svg)](https://www.codetriage.com/bennnis/hajax)
 
 ## 特性

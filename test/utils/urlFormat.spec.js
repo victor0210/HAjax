@@ -14,25 +14,25 @@ describe('utils::urlFormat', () => {
     ).toEqual('/path')
   })
 
-  it('should contact baseUrl and url', () => {
+  it('should contact baseURL and url', () => {
     expect(
       urlFormat('http://www.base.com', 'path')
     ).toEqual('http://www.base.com/path')
   })
 
-  it('should just baseUrl 1', () => {
+  it('should just baseURL 1', () => {
     expect(
       urlFormat('http://www.base.com/')
     ).toEqual('http://www.base.com')
   })
 
-  it('should just baseUrl 2', () => {
+  it('should just baseURL 2', () => {
     expect(
       urlFormat('http://www.base.com')
     ).toEqual('http://www.base.com')
   })
 
-  it('should just baseUrl 3', () => {
+  it('should just baseURL 3', () => {
     expect(
       urlFormat('http://www.base.com/', '/')
     ).toEqual('http://www.base.com')

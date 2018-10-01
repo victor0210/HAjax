@@ -2,15 +2,15 @@ import {
     ABSOLUTE_PATH, AND_MARK, EMPTY, END_SLASH, EQUAL_MARK, HEAD_SLASH, QUESTION_MARK, SINGE_SLASH
 } from "../config/regexp";
 
-const urlFormat = (baseUrl: string = SINGE_SLASH, relativeUrl: string, params?: object): string => {
+const urlFormat = (baseURL: string = SINGE_SLASH, relativeUrl: string, params?: object): string => {
     let url
 
     if (isAbsolute(relativeUrl)) {
         url = relativeUrl
     } else {
         url = relativeUrl
-            ? baseUrl.replace(END_SLASH, EMPTY) + SINGE_SLASH + relativeUrl.replace(HEAD_SLASH, EMPTY)
-            : baseUrl.replace(END_SLASH, SINGE_SLASH);
+            ? baseURL.replace(END_SLASH, EMPTY) + SINGE_SLASH + relativeUrl.replace(HEAD_SLASH, EMPTY)
+            : baseURL.replace(END_SLASH, SINGE_SLASH);
     }
 
     return buildUrl(url, params)

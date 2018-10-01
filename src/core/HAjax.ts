@@ -161,7 +161,7 @@ class HAjax {
             this._emitResponseFlow()
         }
 
-        const urlKey = responseInstance.request.fullUrl
+        const urlKey = responseInstance.request.fullURL
 
         if (
             responseInstance.request.withRushStore &&
@@ -230,7 +230,7 @@ class HAjax {
      * @param requestInstance
      * */
     public storeWithRule(rule, requestInstance: HRequest) {
-        let cache = this.store[requestInstance.fullUrl]
+        let cache = this.store[requestInstance.fullURL]
 
         const runRespWithStore = () => {
             this._runResp(
@@ -267,7 +267,7 @@ class HAjax {
         requestInstance.sendAjax()
 
         this.rushStore(
-            requestInstance.fullUrl,
+            requestInstance.fullURL,
             requestInstance.xhr,
             rule.bufferTime
         )
@@ -382,6 +382,10 @@ class HAjax {
             url,
             method: POST_FLAG
         })
+    }
+
+    public create(opts) {
+        return new HAjax(opts)
     }
 
     /**

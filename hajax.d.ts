@@ -1,5 +1,5 @@
 declare interface Config {
-    baseUrl: string
+    baseURL: string
     url: string
     method: string
     baseURL: string
@@ -38,7 +38,7 @@ declare interface HRequest {
     url: string
     method: string
     baseURL: string
-    fullUrl: string
+    fullURL: string
     headers: object
     params: object
     data: object

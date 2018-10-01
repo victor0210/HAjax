@@ -33,9 +33,9 @@ export default class HRequest {
     // to methods of that instance.
     public baseURL: string
 
-    // `fullUrl`
-    //  The actual requested url combined by baseUrl and url before send out
-    public fullUrl: string
+    // `fullURL`
+    //  The actual requested url combined by baseURL and url before send out
+    public fullURL: string
 
     // `headers`
     // custom headers to be sent
@@ -48,11 +48,7 @@ export default class HRequest {
 
     // `data`
     // data to be sent as the request body
-    // Only applicable for request methods 'PUT', 'POST', and 'PATCH'
-    // When no `transformRequest` is set, must be of one of the following types:
-    // - string, plain object, ArrayBuffer, ArrayBufferView, URLSearchParams
-    // - Browser only: FormData, File, Blob
-    // - Node only: Stream, Buffer
+    // Only applicable for request methods 'POST'
     public data: object
 
     // `timeout`
@@ -213,12 +209,12 @@ export default class HRequest {
         // abort before send
         if (this.aborted) return
 
-        this.fullUrl = urlFormat(this.config.baseUrl, this.config.url, this.config.params)
+        this.fullURL = urlFormat(this.config.baseURL, this.config.url, this.config.params)
 
         // only request with get method could be cached
         // it might be put or others later
         if (this.method.toLowerCase() === GET_FLAG && this.majaxInstance.storeStrategy) {
-            const urlKey = this.fullUrl
+            const urlKey = this.fullURL
             let rule = findMatchStrategy(this.majaxInstance.storeStrategy, urlKey)
 
             if (rule) {
@@ -246,7 +242,7 @@ export default class HRequest {
 
         xhr.open(
             this.config.method.toUpperCase(),
-            this.fullUrl
+            this.fullURL
         )
 
         //headers
@@ -276,9 +272,9 @@ export default class HRequest {
                         this.retryLimit--
 
                         // if xhr has already in 'majax' store, just cover it with new xhr
-                        if (this.majaxInstance.store[this.fullUrl] &&
-                            this.majaxInstance.store[this.fullUrl].xhr === xhr
-                        ) this.majaxInstance.store[this.fullUrl].xhr = this.xhr
+                        if (this.majaxInstance.store[this.fullURL] &&
+                            this.majaxInstance.store[this.fullURL].xhr === xhr
+                        ) this.majaxInstance.store[this.fullURL].xhr = this.xhr
                     }, this.retryBuffer)
                 } else {
                     this.majaxInstance._runResp(

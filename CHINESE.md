@@ -321,6 +321,10 @@ hxDriver.request(config)
     // 返回响应数据的类型。它允许手动的设置返回数据的类型。如果将它设置为一个空字符串，它将使用默认的"text"类型。
     // 枚举类型有下列六种 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
     public responseType: string // default: 'text'
+    
+    // `progressHandler`
+    // xhr进度变化的回调
+    public progressHandler: Function
  
     // `aborted`
     // 请求终止的标识符
@@ -374,6 +378,7 @@ hxDriver.request(config)
 
     // `config`
     // 请求中的配置信息
+    public config: object
 
     // `request`
     // 生成这个响应的对应请求实例

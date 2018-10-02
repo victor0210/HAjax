@@ -322,6 +322,10 @@ Parameters other than `url` are optional.
     // The enumeration types have the following six types 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
     public responseType: string // default: 'text'
  
+    // `progressHandler`
+    // handler xhr progress change event
+    public progressHandler: Function
+
     // `aborted`
     // Identifier requesting termination
     public aborted: boolean

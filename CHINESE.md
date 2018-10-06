@@ -94,24 +94,24 @@ hx.all([getOne(), getTwo()])
 
 ```js
 function getOne() {
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     hx.get('/geturl1')
        .then(function (resp) {
          resolve(resp)
        })
-       .catch(() => {
+       .catch(function () {
          resolve()
        })
   })
 }
 
 function getTwo() {
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     hx.get('/geturl2')
        .then(function (resp) {
          resolve(resp)
        })
-       .catch(() => {
+       .catch(function () {
          resolve()
        })
   })
@@ -182,25 +182,25 @@ hx.setStrategy(
 )
 
 //直接发送请求并将数据缓存
-hx.get('http://majax.test/index.php').then(resp => {
+hx.get('http://majax.test/index.php').then(function (resp) {
 	console.log('success', resp)
-}).catch(resp => {
+}).catch(function (resp) {
 	console.log('failed', resp)
 })
 
-setTimeout(() => {
+setTimeout(function () {
 	//直接获取缓存数据
-	hx.get('http://majax.test/index.php').then(resp => {
+	hx.get('http://majax.test/index.php').then(function (resp) {
 		console.log('success', resp)
-	}).catch(resp => {
+	}).catch(function (resp) {
 		console.log('failed', resp)
 	})
 
-	setTimeout(() => {
+	setTimeout(function () {
 		//缓存过期，重新请求获取数据
-		hx.get('http://majax.test/index.php').then(resp => {
+		hx.get('http://majax.test/index.php').then(function (resp) {
 			console.log('success', resp)
-		}).catch(resp => {
+		}).catch(function (resp) {
 			console.log('failed', resp)
 		})
 	}, 3000)
@@ -225,19 +225,22 @@ hx.request({
 
 // 直接使用 post 方法
 hx.post('/url', {
-  data: {
-    name: 'bennnis'
-  }
+  name: 'bennnis'
 });
 ```
 
 ### 请求方法别名
 
-为了更方便的调用对应的请求方法，我为所有的请求方法都提供了对应的别名，目前只支持 `GET` 和 `POST`, 其他方法我会在后续加入
+为了更方便的调用对应的请求方法，我为所有的请求方法都提供了对应的别名.
 
 ##### hx.request(config)
 ##### hx.get(url[, config])
-##### hx.post(url[, config])
+##### hx.head(url[, config])
+##### hx.options(url[, config])
+##### hx.post(url[, data[, config])
+##### hx.put(url[, data[, config])
+##### hx.patch(url[, data[, config])
+##### hx.delete(url[, data[, config])
 
 ### 并发请求方法
 
@@ -283,7 +286,6 @@ hxDriver.request(config)
 
 ```js
 {
-
     // `url`
     // 请求地址（必须）：可为相对路径和绝对路径
     public url: string
@@ -454,12 +456,12 @@ instance.get('/longRequest', {
 
 ```js
 // 请求拦截
-hx.setRequestInterceptor((config) => {
+hx.setRequestInterceptor(function (config) {
   config.url = 'http://jsonplaceholder.typicode.com/users/1'
 })
 
 // 响应拦截
-hx.setResponseInterceptor((resp) => {
+hx.setResponseInterceptor(function (resp) {
   if (resp.status === 401) window.location = '/login'
 })
 ```
@@ -471,9 +473,9 @@ hx.setResponseInterceptor((resp) => {
 ```js
 // 获取返回的请求实例
 const r = hx.get('http://majax.test/index.php')
-				.then(resp => {
+				.then(function (resp) {
 					// success handler
-				}).catch(resp => {
+				}).catch(function (resp) {
 					// error handler
 				})
 

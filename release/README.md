@@ -94,24 +94,24 @@ Execute concurrent requests: `all` (non-blocking)
 
 ```js
 function getOne() {
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     hx.get('/geturl1')
        .then(function (resp) {
          resolve(resp)
        })
-       .catch(() => {
+       .catch(function () {
          resolve()
        })
   })
 }
 
 function getTwo() {
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     hx.get('/geturl2')
        .then(function (resp) {
          resolve(resp)
        })
-       .catch(() => {
+       .catch(function () {
          resolve()
        })
   })
@@ -182,25 +182,25 @@ hx.setStrategy(
 )
 
 //Send requests directly and cache data
-hx.get('http://majax.test/index.php').then(resp => {
+hx.get('http://majax.test/index.php').then(function (resp) {
 	console.log('success', resp)
-}).catch(resp => {
+}).catch(function (resp) {
 	console.log('failed', resp)
 })
 
-setTimeout(() => {
+setTimeout(function () {
 	//Get cached data directly
-	hx.get('http://majax.test/index.php').then(resp => {
+	hx.get('http://majax.test/index.php').then(function (resp) {
 		console.log('success', resp)
-	}).catch(resp => {
+	}).catch(function (resp) {
 		console.log('failed', resp)
 	})
 
-	setTimeout(() => {
+	setTimeout(function () {
 		//Cache expired, re-requesting to get data
-		hx.get('http://majax.test/index.php').then(resp => {
+		hx.get('http://majax.test/index.php').then(function (resp) {
 			console.log('success', resp)
-		}).catch(resp => {
+		}).catch(function (resp) {
 			console.log('failed', resp)
 		})
 	}, 3000)
@@ -225,19 +225,22 @@ hx.request({
 
 // Use the post method directly
 hx.post('/url', {
-  data: {
-    name: 'bennnis'
-  }
+  name: 'bennnis'
 });
 ```
 
 ### Request method alias
 
-In order to more conveniently call the corresponding request method, I provide the corresponding alias for all the request methods. Currently, only `GET` and `POST` are supported. Other methods will be added later
+In order to more conveniently call the corresponding request method, I provide the corresponding alias for all the request methods. 
 
 ##### hx.request(config)
 ##### hx.get(url[, config])
-##### hx.post(url[, config])
+##### hx.head(url[, config])
+##### hx.options(url[, config])
+##### hx.post(url[, data[, config])
+##### hx.put(url[, data[, config])
+##### hx.patch(url[, data[, config])
+##### hx.delete(url[, data[, config])
 
 ### Concurrent request method
 
@@ -283,7 +286,6 @@ Parameters other than `url` are optional.
 
 ```js
 {
-
     // `url`
     // Request address (required): can be relative and absolute
     public url: string
@@ -346,7 +348,7 @@ Parameters other than `url` are optional.
     public mode: string
 
     // `debounceTime`
-		// Interval in 'debounce' mode
+    // Interval in 'debounce' mode
 
     public debounceTime: number // default: 300
 
@@ -459,12 +461,12 @@ Before the request is sent and after the request is processed by the user, some 
 
 ```js
 // Request interceptor
-hx.setRequestInterceptor((config) => {
+hx.setRequestInterceptor(function (config) {
   config.url = 'http://jsonplaceholder.typicode.com/users/1'
 })
 
 // Response interception
-hx.setResponseInterceptor((resp) => {
+hx.setResponseInterceptor(function (resp) {
   if (resp.status === 401) window.location = '/login'
 })
 ```
@@ -476,9 +478,9 @@ You can terminate a request that is being sent or not sent by the `abort` method
 ```js
 // Get the returned request instance
 const r = hx.get('http://majax.test/index.php')
-				.then(resp => {
+				.then(function (resp) {
 					// success handler
-				}).catch(resp => {
+				}).catch(function (resp) {
 					// error handler
 				})
 

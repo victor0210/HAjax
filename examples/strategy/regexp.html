@@ -10,7 +10,7 @@
 <script>
 	hx.setStrategy(
 		hx.createStrategy(/^test/)
-    )
+	)
 
 	//get
 	hx.get('http://hajax.test/index.php').then(resp => {
@@ -59,39 +59,8 @@
 
 	//post with data
 	hx.post('http://hajax.test/index.php', {
-		data: {
-			name: 'hajax',
-			token: 'bennnis'
-		}
-	}).then(resp => {
-		console.log('success', resp)
-	}).catch(resp => {
-		console.log('failed', resp)
-	})
-
-	//track unStandard way
-	//1. get with data: should be nothing
-	hx.get('http://hajax.test/index.php', {
-		data: {
-			name: 'hajax',
-			token: 'bennnis'
-		}
-	}).then(resp => {
-		console.log('success', resp)
-	}).catch(resp => {
-		console.log('failed', resp)
-	})
-
-	//2. post with params: should be format
-	hx.post('http://hajax.test/index.php', {
-		params: {
-			name: 'hajax',
-			token: 'bennnis'
-		},
-		data: {
-			name: ['majaxPost'],
-			token: 'bennnisPost'
-		}
+		name: 'hajax',
+		token: 'bennnis'
 	}).then(resp => {
 		console.log('success', resp)
 	}).catch(resp => {

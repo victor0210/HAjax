@@ -90,6 +90,11 @@
     };
 
     var GET_FLAG = 'get';
+    var HEAD_FLAG = 'head';
+    var OPTIONS_FLAG = 'options';
+    var PUT_FLAG = 'put';
+    var PATCH_FLAG = 'patch';
+    var DELETE_FLAG = 'delete';
     var POST_FLAG = 'post';
 
     var transferResponseData = function (xhr) {
@@ -648,13 +653,44 @@
             });
             return request;
         };
+        /**
+         * @desc request alias: "get", "head", "options", "post", "put", "patch", "delete"
+         * */
         HAjax.prototype.get = function (url, opts) {
             if (opts === void 0) { opts = {}; }
             return this.request(__assign({}, opts, { url: url, method: GET_FLAG }));
         };
-        HAjax.prototype.post = function (url, opts) {
+        HAjax.prototype.head = function (url, opts) {
             if (opts === void 0) { opts = {}; }
-            return this.request(__assign({}, opts, { url: url, method: POST_FLAG }));
+            return this.request(__assign({}, opts, { url: url, method: HEAD_FLAG }));
+        };
+        HAjax.prototype.options = function (url, opts) {
+            if (opts === void 0) { opts = {}; }
+            return this.request(__assign({}, opts, { url: url, method: OPTIONS_FLAG }));
+        };
+        HAjax.prototype.post = function (url, data, opts) {
+            if (data === void 0) { data = {}; }
+            if (opts === void 0) { opts = {}; }
+            return this.request(__assign({}, opts, { url: url,
+                data: data, method: POST_FLAG }));
+        };
+        HAjax.prototype.put = function (url, data, opts) {
+            if (data === void 0) { data = {}; }
+            if (opts === void 0) { opts = {}; }
+            return this.request(__assign({}, opts, { url: url,
+                data: data, method: PUT_FLAG }));
+        };
+        HAjax.prototype.patch = function (url, data, opts) {
+            if (data === void 0) { data = {}; }
+            if (opts === void 0) { opts = {}; }
+            return this.request(__assign({}, opts, { url: url,
+                data: data, method: PATCH_FLAG }));
+        };
+        HAjax.prototype.delete = function (url, data, opts) {
+            if (data === void 0) { data = {}; }
+            if (opts === void 0) { opts = {}; }
+            return this.request(__assign({}, opts, { url: url,
+                data: data, method: DELETE_FLAG }));
         };
         HAjax.prototype.create = function (opts) {
             return new HAjax(opts);

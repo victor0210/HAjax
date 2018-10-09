@@ -10,6 +10,7 @@ import {throwIf, warnIf} from "../utils/conditionCheck";
 import {DEBOUNCE, THROTTLE} from "../config/storeMode";
 import {TYPE_OBJECT} from "../config/baseType";
 import Strategy from "./Strategy";
+import {DELETE_FLAG, HEAD_FLAG, OPTIONS_FLAG, PATCH_FLAG, PUT_FLAG} from "../config/requestMethods";
 
 class HAjax {
     // `_requestDealTarget`
@@ -368,6 +369,9 @@ class HAjax {
         return request
     }
 
+    /**
+     * @desc request alias: "get", "head", "options", "post", "put", "patch", "delete"
+     * */
     public get(url: string, opts = {}): HRequest {
         return this.request({
             ...opts,
@@ -376,11 +380,55 @@ class HAjax {
         })
     }
 
-    public post(url: string, opts = {}): HRequest {
+    public head(url: string, opts = {}): HRequest {
         return this.request({
             ...opts,
             url,
+            method: HEAD_FLAG
+        })
+    }
+
+    public options(url: string, opts = {}): HRequest {
+        return this.request({
+            ...opts,
+            url,
+            method: OPTIONS_FLAG
+        })
+    }
+
+    public post(url: string, data = {}, opts = {}): HRequest {
+        return this.request({
+            ...opts,
+            url,
+            data,
             method: POST_FLAG
+        })
+    }
+
+    public put(url: string, data = {}, opts = {}): HRequest {
+        return this.request({
+            ...opts,
+            url,
+            data,
+            method: PUT_FLAG
+        })
+    }
+
+    public patch(url: string, data = {}, opts = {}): HRequest {
+        return this.request({
+            ...opts,
+            url,
+            data,
+            method: PATCH_FLAG
+        })
+    }
+
+    public delete(url: string, data = {}, opts = {}): HRequest {
+        return this.request({
+            ...opts,
+            url,
+            data,
+            method: DELETE_FLAG
         })
     }
 

@@ -1,2 +1,7 @@
 export const GET_FLAG = 'get'
+export const HEAD_FLAG = 'head'
+export const OPTIONS_FLAG = 'options'
+export const PUT_FLAG = 'put'
+export const PATCH_FLAG = 'patch'
+export const DELETE_FLAG = 'delete'
 export const POST_FLAG = 'post'

@@ -284,6 +284,7 @@ var HRequest = /** @class */ (function () {
                 (store && store.concurrentBuffer.length === 0))
                 this.xhr.abort();
         }
+        // add abort callback ?
     };
     /**
      * @desc got uuid of request instance
@@ -417,10 +418,11 @@ var DEBOUNCE = 'debounce';
 var THROTTLE = 'throttle';
 
 var Strategy = /** @class */ (function () {
-    function Strategy(urlExp, bufferTime) {
+    function Strategy(urlExp, bufferTime, autoRetry) {
         warnIf(!urlExp, 'url in store strategy is invalid');
         this.urlExp = urlExp;
-        this.bufferTime = ~~bufferTime;
+        this.bufferTime = ~~bufferTime || CACHE_FOREVER;
+        this.autoRetry = !!autoRetry;
     }
     return Strategy;
 }());
@@ -509,6 +511,7 @@ var HAjax = /** @class */ (function () {
             responseInstance.request.xhr === this.store[urlKey].xhr) {
             var cache = this.store[urlKey];
             cache.hasCache = true;
+            cache.responseHeaders = responseInstance.headers;
             while (cache.concurrentBuffer.length > 0) {
                 var req = cache.concurrentBuffer.shift();
                 !req.aborted && this._runResp(new HResponse(cache.xhr, req, responseInstance.headers));
@@ -561,7 +564,7 @@ var HAjax = /** @class */ (function () {
         var _this = this;
         var cache = this.store[requestInstance.fullURL];
         var runRespWithStore = function () {
-            _this._runResp(new HResponse(cache.xhr, requestInstance));
+            _this._runResp(new HResponse(cache.xhr, requestInstance, cache.responseHeaders));
         };
         // Turn on an actual request if there is no cache or the request needs to flush the cache
         // If the first request is being requested and the cache time exceeds expires at this time
@@ -574,6 +577,8 @@ var HAjax = /** @class */ (function () {
         if (!cache || requestInstance.withRushStore)
             return this.rushRequest(rule, requestInstance);
         cache.concurrentBuffer.push(requestInstance);
+        // xhr retry patch
+        cache.autoRetry && (cache.requestInstance.retryLimit += 1);
         if (cache.hasCache) {
             if (cache.bufferTime && cache.bufferTime !== CACHE_FOREVER) {
                 if (new Date().getTime() <= cache.expires)
@@ -586,7 +591,7 @@ var HAjax = /** @class */ (function () {
     };
     HAjax.prototype.rushRequest = function (rule, requestInstance) {
         requestInstance.sendAjax();
-        this.rushStore(requestInstance.fullURL, requestInstance.xhr, rule.bufferTime);
+        this.rushStore(requestInstance, requestInstance.fullURL, requestInstance.xhr, rule.bufferTime, rule.autoRetry);
     };
     /**
      * @desc check store if match rush strategy
@@ -604,22 +609,30 @@ var HAjax = /** @class */ (function () {
     };
     /**
      * @desc init or rush old store
+     * @param requestInstance
      * @param key: request fullpath
      * @param xhr
      * @param bufferTime
+     * @param autoRetry
      * */
-    HAjax.prototype.rushStore = function (key, xhr, bufferTime) {
+    HAjax.prototype.rushStore = function (requestInstance, key, xhr, bufferTime, autoRetry) {
         if (!this.store[key]) {
             this.store[key] = {
                 hasCache: false,
-                xhr: xhr,
                 concurrentBuffer: [],
+                expires: new Date().getTime() + bufferTime,
+                responseHeaders: {},
+                xhr: xhr,
                 bufferTime: bufferTime,
-                expires: new Date().getTime() + bufferTime
+                requestInstance: requestInstance,
+                autoRetry: autoRetry
             };
         }
         else {
-            this.store[key] = __assign({}, this.store[key], { xhr: xhr, expires: new Date().getTime() + bufferTime });
+            this.store[key] = __assign({}, this.store[key], { expires: new Date().getTime() + bufferTime, xhr: xhr,
+                autoRetry: autoRetry
+                // bufferTime: bufferTime,          // if need rush bufferTime for user update ?
+             });
         }
     };
     // ---------------------- global api recommended to users ----------------------
@@ -720,10 +733,11 @@ var HAjax = /** @class */ (function () {
      * @desc validate strategy param if valid
      * @param urlExp
      * @param bufferTime: the cache would be force used if bufferTime is -1 (default)
+     * @param autoRetry
      * */
-    HAjax.prototype.createStrategy = function (urlExp, bufferTime) {
-        if (bufferTime === void 0) { bufferTime = CACHE_FOREVER; }
-        return new Strategy(urlExp, bufferTime);
+    HAjax.prototype.createStrategy = function (urlExp, bufferTime, autoRetry) {
+        if (autoRetry === void 0) { autoRetry = true; }
+        return new Strategy(urlExp, bufferTime, autoRetry);
     };
     /**
      * @desc set new store strategy for driver, which could cover the old strategy

@@ -8,16 +8,21 @@
 </head>
 <body>
 <script>
-    hx.setStrategy(
-    	hx.createStrategy('*')
-    )
+	hx.setStrategy(
+		hx.createStrategy(
+			'*',
+			null
+			// default "true", retry count would not auto increment if "false"
+		)
+	)
 
+    // auto retry once
 	hx.get('http://xxx.test/index.php', {
-		retryLimit: 3
+		// auto patch retryLimit: 1
 	}).then(resp => {
 		console.log('success', resp)
 	}).catch(resp => {
-		console.log('failed---1', resp)
+		console.log('failed----1', resp)
 	})
 
 	hx.get('http://xxx.test/index.php').then(resp => {

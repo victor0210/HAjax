@@ -1,4 +1,5 @@
 import {warnIf} from "../utils/conditionCheck";
+import {CACHE_FOREVER} from "../config/regexp";
 
 class Strategy {
     // `url`
@@ -12,14 +13,20 @@ class Strategy {
     // and throw it for completed-handler
     public bufferTime: number
 
-    constructor(urlExp: any, bufferTime: number) {
+    // `autoRetry`
+    // lead request will autoRetry when complete error, and times plus one when
+    // another request pushed into concurrent buffer
+    public autoRetry: boolean
+
+    constructor(urlExp: any, bufferTime: number, autoRetry: boolean) {
         warnIf(
             !urlExp,
             'url in store strategy is invalid'
         )
 
         this.urlExp = urlExp
-        this.bufferTime = ~~bufferTime
+        this.bufferTime = ~~bufferTime || CACHE_FOREVER
+        this.autoRetry = !!autoRetry
     }
 }
 

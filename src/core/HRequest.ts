@@ -180,6 +180,8 @@ class HRequest {
                 (store && store.concurrentBuffer.length === 0)
             ) this.xhr.abort()
         }
+
+        // add abort callback ?
     }
 
     /**

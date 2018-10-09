@@ -344,17 +344,14 @@ Parameters other than `url` are optional.
     // There are two request modes in hx: no default
     // 'deboucne': Only send the last request within a certain time (debounceTime)
     // 'trottle': When a request is sent, it must be separated by a certain time (throttleTime) before the next request can be sent.
-
     public mode: string
 
     // `debounceTime`
     // Interval in 'debounce' mode
-
     public debounceTime: number // default: 300
 
     // `throttleTime`
     // Interval in 'throttle' mode
-
     public throttleTime: number // default: 3000
 }
 ```

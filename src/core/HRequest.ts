@@ -80,9 +80,9 @@ class HRequest {
     // will restore cache data if necessary
     public withRushStore: boolean
 
-    // `majaxInstance`
+    // `hajaxInstance`
     // driver of this request, inject by visit
-    public majaxInstance: HAjax
+    public hajaxInstance: HAjax
 
     // `aborted`
     // abort flag for concurrent requests buffer area
@@ -172,7 +172,7 @@ class HRequest {
         this.aborted = true
 
         if (this.xhr) {
-            const store = this.majaxInstance.store[this.url]
+            const store = this.hajaxInstance.store[this.url]
 
             // abort directly if request is single action
             if (
@@ -192,10 +192,10 @@ class HRequest {
 
     /**
      * @desc accept hajax instance for visiting
-     * @param majaxInstance
+     * @param hajaxInstance
      * */
-    public accept(majaxInstance: HAjax) {
-        this.majaxInstance = majaxInstance
+    public accept(hajaxInstance: HAjax) {
+        this.hajaxInstance = hajaxInstance
     }
 
     /**
@@ -213,13 +213,13 @@ class HRequest {
 
         // only request with get method could be cached
         // it might be put or others later
-        if (this.method.toLowerCase() === GET_FLAG && this.majaxInstance.storeStrategy) {
+        if (this.method.toLowerCase() === GET_FLAG && this.hajaxInstance.storeStrategy) {
             const urlKey = this.fullURL
-            let rule = findMatchStrategy(this.majaxInstance.storeStrategy, urlKey)
+            let rule = findMatchStrategy(this.hajaxInstance.storeStrategy, urlKey)
 
             if (rule) {
-                this.withRushStore = this.majaxInstance.checkStoreExpired(urlKey)
-                this.majaxInstance.storeWithRule(rule, this)
+                this.withRushStore = this.hajaxInstance.checkStoreExpired(urlKey)
+                this.hajaxInstance.storeWithRule(rule, this)
             } else {
                 this.sendAjax()
             }
@@ -272,9 +272,9 @@ class HRequest {
                         this.retryLimit--
 
                         // if xhr has already in 'hajax' store, just cover it with new xhr
-                        if (this.majaxInstance.store[this.fullURL] &&
-                            this.majaxInstance.store[this.fullURL].xhr === xhr
-                        ) this.majaxInstance.store[this.fullURL].xhr = this.xhr
+                        if (this.hajaxInstance.store[this.fullURL] &&
+                            this.hajaxInstance.store[this.fullURL].xhr === xhr
+                        ) this.hajaxInstance.store[this.fullURL].xhr = this.xhr
                     }, this.retryBuffer)
                 } else {
                     // Get the raw header string
@@ -292,7 +292,7 @@ class HRequest {
                         headerMap[header] = parts.join(': ')
                     });
 
-                    this.majaxInstance._runResp(
+                    this.hajaxInstance._runResp(
                         new HResponse(
                             xhr,
                             this,

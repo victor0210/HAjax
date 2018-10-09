@@ -104,9 +104,10 @@ var transferResponseData = function (xhr) {
 
 var HResponse = /** @class */ (function () {
     function HResponse(completedXhr, requestInstance, responseHeader) {
+        if (responseHeader === void 0) { responseHeader = {}; }
         this.status = completedXhr.status;
         this.statusText = completedXhr.statusText;
-        this.headers = responseHeader;
+        this.headers = __assign({}, responseHeader);
         this.config = __assign({}, requestInstance.config);
         this.data = transferResponseData(completedXhr);
         this.request = requestInstance;
@@ -277,7 +278,7 @@ var HRequest = /** @class */ (function () {
     HRequest.prototype.abort = function () {
         this.aborted = true;
         if (this.xhr) {
-            var store = this.majaxInstance.store[this.url];
+            var store = this.hajaxInstance.store[this.url];
             // abort directly if request is single action
             if (!store ||
                 (store && store.concurrentBuffer.length === 0))
@@ -293,10 +294,10 @@ var HRequest = /** @class */ (function () {
     };
     /**
      * @desc accept hajax instance for visiting
-     * @param majaxInstance
+     * @param hajaxInstance
      * */
-    HRequest.prototype.accept = function (majaxInstance) {
-        this.majaxInstance = majaxInstance;
+    HRequest.prototype.accept = function (hajaxInstance) {
+        this.hajaxInstance = hajaxInstance;
     };
     /**
      * @desc prepare to send an ajax request with blow:
@@ -312,12 +313,12 @@ var HRequest = /** @class */ (function () {
         this.fullURL = urlFormat(this.config.baseURL, this.config.url, this.config.params);
         // only request with get method could be cached
         // it might be put or others later
-        if (this.method.toLowerCase() === GET_FLAG && this.majaxInstance.storeStrategy) {
+        if (this.method.toLowerCase() === GET_FLAG && this.hajaxInstance.storeStrategy) {
             var urlKey = this.fullURL;
-            var rule = findMatchStrategy(this.majaxInstance.storeStrategy, urlKey);
+            var rule = findMatchStrategy(this.hajaxInstance.storeStrategy, urlKey);
             if (rule) {
-                this.withRushStore = this.majaxInstance.checkStoreExpired(urlKey);
-                this.majaxInstance.storeWithRule(rule, this);
+                this.withRushStore = this.hajaxInstance.checkStoreExpired(urlKey);
+                this.hajaxInstance.storeWithRule(rule, this);
             }
             else {
                 this.sendAjax();
@@ -360,9 +361,9 @@ var HRequest = /** @class */ (function () {
                         _this.sendAjax();
                         _this.retryLimit--;
                         // if xhr has already in 'hajax' store, just cover it with new xhr
-                        if (_this.majaxInstance.store[_this.fullURL] &&
-                            _this.majaxInstance.store[_this.fullURL].xhr === xhr)
-                            _this.majaxInstance.store[_this.fullURL].xhr = _this.xhr;
+                        if (_this.hajaxInstance.store[_this.fullURL] &&
+                            _this.hajaxInstance.store[_this.fullURL].xhr === xhr)
+                            _this.hajaxInstance.store[_this.fullURL].xhr = _this.xhr;
                     }, _this.retryBuffer);
                 }
                 else {
@@ -378,7 +379,7 @@ var HRequest = /** @class */ (function () {
                         var header = parts.shift();
                         headerMap_1[header] = parts.join(': ');
                     });
-                    _this.majaxInstance._runResp(new HResponse(xhr, _this, headerMap_1));
+                    _this.hajaxInstance._runResp(new HResponse(xhr, _this, headerMap_1));
                 }
             }
         };
@@ -510,7 +511,7 @@ var HAjax = /** @class */ (function () {
             cache.hasCache = true;
             while (cache.concurrentBuffer.length > 0) {
                 var req = cache.concurrentBuffer.shift();
-                !req.aborted && this._runResp(new HResponse(cache.xhr, req));
+                !req.aborted && this._runResp(new HResponse(cache.xhr, req, responseInstance.headers));
             }
         }
     };

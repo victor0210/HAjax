@@ -178,11 +178,11 @@ Three configuration schemes for caching strategies
 //Generate a cache policy with "createStrategy"
 
 hx.setStrategy(
-	hx.createStrategy('http://majax.test/index.php', 4000)
+	hx.createStrategy('http://hajax.test/index.php', 4000)
 )
 
 //Send requests directly and cache data
-hx.get('http://majax.test/index.php').then(function (resp) {
+hx.get('http://hajax.test/index.php').then(function (resp) {
 	console.log('success', resp)
 }).catch(function (resp) {
 	console.log('failed', resp)
@@ -190,7 +190,7 @@ hx.get('http://majax.test/index.php').then(function (resp) {
 
 setTimeout(function () {
 	//Get cached data directly
-	hx.get('http://majax.test/index.php').then(function (resp) {
+	hx.get('http://hajax.test/index.php').then(function (resp) {
 		console.log('success', resp)
 	}).catch(function (resp) {
 		console.log('failed', resp)
@@ -198,7 +198,7 @@ setTimeout(function () {
 
 	setTimeout(function () {
 		//Cache expired, re-requesting to get data
-		hx.get('http://majax.test/index.php').then(function (resp) {
+		hx.get('http://hajax.test/index.php').then(function (resp) {
 			console.log('success', resp)
 		}).catch(function (resp) {
 			console.log('failed', resp)
@@ -474,7 +474,7 @@ You can terminate a request that is being sent or not sent by the `abort` method
 
 ```js
 // Get the returned request instance
-const r = hx.get('http://majax.test/index.php')
+const r = hx.get('http://hajax.test/index.php')
 				.then(function (resp) {
 					// success handler
 				}).catch(function (resp) {

@@ -2,7 +2,6 @@ declare interface Config {
     baseURL: string
     url: string
     method: string
-    baseURL: string
     headers: object
     params: object
     mode: string
@@ -48,7 +47,7 @@ declare interface HRequest {
     xhr: XMLHttpRequest
     config: Config
     withRushStore: boolean
-    majaxInstance: HAjax
+    hajaxInstance: HAjax
     aborted: boolean
     retryLimit: number
     retryBuffer: number

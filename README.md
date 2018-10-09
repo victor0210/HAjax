@@ -34,7 +34,7 @@ $ npm install hajax
 use script:
 
 ```html
-<script src="hx.min.js"></script>
+<script src="release/dist/hx.min.js"></script>
 ```
 
 ## Basic
@@ -203,14 +203,14 @@ setTimeout(function () {
 
 ##### hx.createStrategy(exp[, bufferTime[, autoRetry])
 
-exp（必填）:
+1. exp（required）:
+	1. url
+	2. RegExp
+	3. '*'
 
-1. 确定的url: 在字符串匹配模式下，http://www.api.com 不等同于 www.api.com，这种缓存的匹配策略还有很多可以改善的地方，如果你有什么想法，随时可以告诉我
-2. 正则表达式
-3. '*'
+2. bufferTime (default：-1; cache fresh after window refresh）: buffer time
 
-bufferTime（默认：-1 即缓存在页面刷新后过期）: 缓存时间；
-autoRetry（默认：true）: 缓存模式下，失败是否自动重新请求策略，重试次数为：请求结束之前除主请求（实际发送出去的请求）以外的缓存请求的个数；
+3. autoRetry (default：true): The number of retries is as follows: the number of caching requests before the end of the request except for the main request (the request actually sent out);
 
 ## HAjax API
 

@@ -167,12 +167,6 @@ By default, when the first request fails, all subsequent requests will fail. The
 
 ### How To Use
 
-Three configuration schemes for caching strategies
-
-1. Determined url: In string matching mode, http://www.api.com is not equivalent to www.api.com, there are many improvements to this cache matching strategy, if you have any idea, feel free to Please let me know
-2. Regular expression
-3. '*'
-
 ```js
 //Configuring the cache with "setStrategy"
 //Generate a cache policy with "createStrategy"

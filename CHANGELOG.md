@@ -8,3 +8,4 @@
 
 ## v0.0.6: (TO BE SUPPORT)
 1. fix ways to get response headers
+2. auto patch retry times for cache's lead request

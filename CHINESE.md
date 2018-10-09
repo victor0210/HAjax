@@ -167,18 +167,12 @@ hajax：
 
 ### 使用方法
 
-缓存策略的三种配置方案
-
-1. 确定的url: 在字符串匹配模式下，http://www.api.com 不等同于 www.api.com，这种缓存的匹配策略还有很多可以改善的地方，如果你有什么想法，随时可以告诉我
-2. 正则表达式
-3. '*'
-
 ```js
 //通过setStrategy配置缓存
 //通过createStrategy生成缓存策略
 
 hx.setStrategy(
-	hx.createStrategy('http://hajax.test/index.php', 4000)
+	hx.createStrategy('http://hajax.test/index.php', 4000, true)
 )
 
 //直接发送请求并将数据缓存
@@ -206,6 +200,17 @@ setTimeout(function () {
 	}, 3000)
 }, 3000)
 ```
+
+##### hx.createStrategy(exp[, bufferTime[, autoRetry])
+
+exp（必填）:
+
+1. 确定的url: 在字符串匹配模式下，http://www.api.com 不等同于 www.api.com，这种缓存的匹配策略还有很多可以改善的地方，如果你有什么想法，随时可以告诉我
+2. 正则表达式
+3. '*'
+
+bufferTime（默认：-1 即缓存在页面刷新后过期）: 缓存时间；
+autoRetry（默认：true）: 缓存模式下，失败是否自动重新请求策略，重试次数为：请求结束之前除主请求（实际发送出去的请求）以外的缓存请求的个数；
 
 ## HAjax API
 
@@ -485,7 +490,7 @@ r.abort()
 
 ## Promise支持
 
-`HAjax`  中的 `all` 方法和 `race` 使用到了Promise，如果你需要使用这两个方法，确保执行环境中存在Promise的支持：原生或者使用[polyfill](https://github.com/stefanpenner/es6-promise)
+`HAjax`  中的 `all` 方法和 `race` 使用到了Promise，如果你需要使用这两个方法，确保执行环境中存在Promise的支持：原生或者使用[es6-promise](https://github.com/stefanpenner/es6-promise)
 
 ## 相关资源
 

@@ -105,11 +105,11 @@ var transferResponseData = function (xhr) {
 };
 
 var HResponse = /** @class */ (function () {
-    function HResponse(completedXhr, requestInstance) {
+    function HResponse(completedXhr, requestInstance, responseHeader) {
         this.status = completedXhr.status;
         this.statusText = completedXhr.statusText;
-        this.headers = requestInstance.headers;
-        this.config = requestInstance.config;
+        this.headers = responseHeader;
+        this.config = __assign({}, requestInstance.config);
         this.data = transferResponseData(completedXhr);
         this.request = requestInstance;
     }
@@ -368,7 +368,19 @@ var HRequest = /** @class */ (function () {
                     }, _this.retryBuffer);
                 }
                 else {
-                    _this.majaxInstance._runResp(new HResponse(xhr, _this));
+                    // Get the raw header string
+                    var headers = xhr.getAllResponseHeaders();
+                    // Convert the header string into an array
+                    // of individual headers
+                    var arr = headers.trim().split(/[\r\n]+/);
+                    // Create a map of header names to values
+                    var headerMap_1 = {};
+                    arr.forEach(function (line) {
+                        var parts = line.split(': ');
+                        var header = parts.shift();
+                        headerMap_1[header] = parts.join(': ');
+                    });
+                    _this.majaxInstance._runResp(new HResponse(xhr, _this, headerMap_1));
                 }
             }
         };

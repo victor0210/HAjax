@@ -277,10 +277,26 @@ export default class HRequest {
                         ) this.majaxInstance.store[this.fullURL].xhr = this.xhr
                     }, this.retryBuffer)
                 } else {
+                    // Get the raw header string
+                    let headers = xhr.getAllResponseHeaders();
+
+                    // Convert the header string into an array
+                    // of individual headers
+                    let arr = headers.trim().split(/[\r\n]+/)
+
+                    // Create a map of header names to values
+                    let headerMap = {};
+                    arr.forEach((line) => {
+                        let parts = line.split(': ')
+                        let header = parts.shift()
+                        headerMap[header] = parts.join(': ')
+                    });
+
                     this.majaxInstance._runResp(
                         new HResponse(
                             xhr,
-                            this
+                            this,
+                            headerMap
                         )
                     )
                 }

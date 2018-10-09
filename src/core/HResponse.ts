@@ -27,11 +27,11 @@ export default class HResponse {
     // HRequest instance which produce this response
     public request: HRequest
 
-    constructor(completedXhr: XMLHttpRequest, requestInstance: HRequest) {
+    constructor(completedXhr: XMLHttpRequest, requestInstance: HRequest, responseHeader: object) {
         this.status = completedXhr.status
         this.statusText = completedXhr.statusText
-        this.headers = requestInstance.headers
-        this.config = requestInstance.config
+        this.headers = responseHeader
+        this.config = {...requestInstance.config}
         this.data = transferResponseData(completedXhr)
         this.request = requestInstance
     }

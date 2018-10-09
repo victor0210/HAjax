@@ -6,7 +6,7 @@ import {GET_FLAG} from "../config/requestMethods";
 import urlFormat from "../utils/urlFormat";
 import {RESP_SUCCESS_CODE_PREFIX} from "../config/regexp";
 
-export default class HRequest {
+class HRequest {
     // `_uuid`
     // "Universally Unique Identifier" for marking per request:
     private _uuid: number = ~~(Math.random() * 10e8)
@@ -80,9 +80,9 @@ export default class HRequest {
     // will restore cache data if necessary
     public withRushStore: boolean
 
-    // `majaxInstance`
+    // `hajaxInstance`
     // driver of this request, inject by visit
-    public majaxInstance: HAjax
+    public hajaxInstance: HAjax
 
     // `aborted`
     // abort flag for concurrent requests buffer area
@@ -172,7 +172,7 @@ export default class HRequest {
         this.aborted = true
 
         if (this.xhr) {
-            const store = this.majaxInstance.store[this.url]
+            const store = this.hajaxInstance.store[this.url]
 
             // abort directly if request is single action
             if (
@@ -180,6 +180,8 @@ export default class HRequest {
                 (store && store.concurrentBuffer.length === 0)
             ) this.xhr.abort()
         }
+
+        // add abort callback ?
     }
 
     /**
@@ -192,10 +194,10 @@ export default class HRequest {
 
     /**
      * @desc accept hajax instance for visiting
-     * @param majaxInstance
+     * @param hajaxInstance
      * */
-    public accept(majaxInstance: HAjax) {
-        this.majaxInstance = majaxInstance
+    public accept(hajaxInstance: HAjax) {
+        this.hajaxInstance = hajaxInstance
     }
 
     /**
@@ -213,13 +215,13 @@ export default class HRequest {
 
         // only request with get method could be cached
         // it might be put or others later
-        if (this.method.toLowerCase() === GET_FLAG && this.majaxInstance.storeStrategy) {
+        if (this.method.toLowerCase() === GET_FLAG && this.hajaxInstance.storeStrategy) {
             const urlKey = this.fullURL
-            let rule = findMatchStrategy(this.majaxInstance.storeStrategy, urlKey)
+            let rule = findMatchStrategy(this.hajaxInstance.storeStrategy, urlKey)
 
             if (rule) {
-                this.withRushStore = this.majaxInstance.checkStoreExpired(urlKey)
-                this.majaxInstance.storeWithRule(rule, this)
+                this.withRushStore = this.hajaxInstance.checkStoreExpired(urlKey)
+                this.hajaxInstance.storeWithRule(rule, this)
             } else {
                 this.sendAjax()
             }
@@ -272,15 +274,31 @@ export default class HRequest {
                         this.retryLimit--
 
                         // if xhr has already in 'hajax' store, just cover it with new xhr
-                        if (this.majaxInstance.store[this.fullURL] &&
-                            this.majaxInstance.store[this.fullURL].xhr === xhr
-                        ) this.majaxInstance.store[this.fullURL].xhr = this.xhr
+                        if (this.hajaxInstance.store[this.fullURL] &&
+                            this.hajaxInstance.store[this.fullURL].xhr === xhr
+                        ) this.hajaxInstance.store[this.fullURL].xhr = this.xhr
                     }, this.retryBuffer)
                 } else {
-                    this.majaxInstance._runResp(
+                    // Get the raw header string
+                    let headers = xhr.getAllResponseHeaders();
+
+                    // Convert the header string into an array
+                    // of individual headers
+                    let arr = headers.trim().split(/[\r\n]+/)
+
+                    // Create a map of header names to values
+                    let headerMap = {};
+                    arr.forEach((line) => {
+                        let parts = line.split(': ')
+                        let header = parts.shift()
+                        headerMap[header] = parts.join(': ')
+                    });
+
+                    this.hajaxInstance._runResp(
                         new HResponse(
                             xhr,
-                            this
+                            this,
+                            headerMap
                         )
                     )
                 }
@@ -301,3 +319,5 @@ export default class HRequest {
         this.xhr.send(JSON.stringify(this.data))
     }
 }
+
+export default HRequest

@@ -5,7 +5,7 @@ import HRequest from "./HRequest";
 import Queue from "../impelments/Queue";
 import HResponse from "./HResponse";
 import {CACHE_FOREVER, RESP_SUCCESS_CODE_PREFIX} from "../config/regexp";
-import {containedInArr, matchInstance, matchType} from "../utils/matcher";
+import {containedInArr, matchType} from "../utils/matcher";
 import {throwIf, warnIf} from "../utils/conditionCheck";
 import {DEBOUNCE, THROTTLE} from "../config/storeMode";
 import {TYPE_OBJECT} from "../config/baseType";
@@ -171,13 +171,15 @@ class HAjax {
             const cache = this.store[urlKey]
 
             cache.hasCache = true
+            cache.responseHeaders = responseInstance.headers
             while (cache.concurrentBuffer.length > 0) {
                 let req = cache.concurrentBuffer.shift()
 
                 !req.aborted && this._runResp(
                     new HResponse(
                         cache.xhr,
-                        req
+                        req,
+                        responseInstance.headers
                     )
                 )
             }
@@ -237,7 +239,8 @@ class HAjax {
             this._runResp(
                 new HResponse(
                     cache.xhr,
-                    requestInstance
+                    requestInstance,
+                    cache.responseHeaders
                 )
             )
         }
@@ -255,6 +258,9 @@ class HAjax {
 
         cache.concurrentBuffer.push(requestInstance)
 
+        // xhr retry patch
+        cache.autoRetry && (cache.requestInstance.retryLimit += 1)
+
         if (cache.hasCache) {
             if (cache.bufferTime && cache.bufferTime !== CACHE_FOREVER) {
                 if (new Date().getTime() <= cache.expires) runRespWithStore()
@@ -268,9 +274,11 @@ class HAjax {
         requestInstance.sendAjax()
 
         this.rushStore(
+            requestInstance,
             requestInstance.fullURL,
             requestInstance.xhr,
-            rule.bufferTime
+            rule.bufferTime,
+            rule.autoRetry,
         )
     }
 
@@ -292,24 +300,30 @@ class HAjax {
 
     /**
      * @desc init or rush old store
+     * @param requestInstance
      * @param key: request fullpath
      * @param xhr
      * @param bufferTime
+     * @param autoRetry
      * */
-    public rushStore(key: string, xhr: XMLHttpRequest, bufferTime: number) {
+    public rushStore(requestInstance: HRequest, key: string, xhr: XMLHttpRequest, bufferTime: number, autoRetry: boolean) {
         if (!this.store[key]) {
             this.store[key] = {
                 hasCache: false,
-                xhr: xhr,
                 concurrentBuffer: [],
-                bufferTime: bufferTime,
-                expires: new Date().getTime() + bufferTime
+                expires: new Date().getTime() + bufferTime,
+                responseHeaders: {},
+                xhr,
+                bufferTime,
+                requestInstance,
+                autoRetry
             }
         } else {
             this.store[key] = {
                 ...this.store[key],
-                xhr: xhr,
-                expires: new Date().getTime() + bufferTime
+                expires: new Date().getTime() + bufferTime,
+                xhr,
+                autoRetry
                 // bufferTime: bufferTime,          // if need rush bufferTime for user update ?
             }
         }
@@ -456,9 +470,10 @@ class HAjax {
      * @desc validate strategy param if valid
      * @param urlExp
      * @param bufferTime: the cache would be force used if bufferTime is -1 (default)
+     * @param autoRetry
      * */
-    public createStrategy(urlExp: any, bufferTime: number = CACHE_FOREVER): Strategy {
-        return new Strategy(urlExp, bufferTime)
+    public createStrategy(urlExp: any, bufferTime: number, autoRetry: boolean = true): Strategy {
+        return new Strategy(urlExp, bufferTime, autoRetry)
     }
 
     /**

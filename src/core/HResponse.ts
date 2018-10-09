@@ -1,7 +1,7 @@
 import HRequest from "./HRequest";
 import transferResponseData from "../utils/transferResponseData";
 
-export default class HResponse {
+class HResponse {
     // `data`
     // is an object transformed by response schema data
     public data: any
@@ -27,10 +27,10 @@ export default class HResponse {
     // HRequest instance which produce this response
     public request: HRequest
 
-    constructor(completedXhr: XMLHttpRequest, requestInstance: HRequest, responseHeader: object) {
+    constructor(completedXhr: XMLHttpRequest, requestInstance: HRequest, responseHeader: object = {}) {
         this.status = completedXhr.status
         this.statusText = completedXhr.statusText
-        this.headers = responseHeader
+        this.headers = {...responseHeader}
         this.config = {...requestInstance.config}
         this.data = transferResponseData(completedXhr)
         this.request = requestInstance
@@ -50,3 +50,5 @@ export default class HResponse {
         this.request.failed(this)
     }
 }
+
+export default HResponse

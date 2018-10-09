@@ -6,7 +6,7 @@ import {GET_FLAG} from "../config/requestMethods";
 import urlFormat from "../utils/urlFormat";
 import {RESP_SUCCESS_CODE_PREFIX} from "../config/regexp";
 
-export default class HRequest {
+class HRequest {
     // `_uuid`
     // "Universally Unique Identifier" for marking per request:
     private _uuid: number = ~~(Math.random() * 10e8)
@@ -317,3 +317,5 @@ export default class HRequest {
         this.xhr.send(JSON.stringify(this.data))
     }
 }
+
+export default HRequest

@@ -177,7 +177,8 @@ class HAjax {
                 !req.aborted && this._runResp(
                     new HResponse(
                         cache.xhr,
-                        req
+                        req,
+                        responseInstance.headers
                     )
                 )
             }
